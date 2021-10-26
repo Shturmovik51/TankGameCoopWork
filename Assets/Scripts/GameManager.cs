@@ -4,6 +4,9 @@ namespace TankGame
 {
     public class GameManager : MonoBehaviour
     {
+        [SerializeField] private int _effectsCount;
+        [SerializeField] private Transform _playerStartPos;
+
         private ControllersManager _controllersManager;
         private GameData _gameData;
 
@@ -13,7 +16,7 @@ namespace TankGame
             _controllersManager = new ControllersManager();
             _gameData = (GameData) Resources.Load("GameData");
 
-            new GameInitializator(_controllersManager, _gameData);
+            new GameInitializator(_controllersManager, _gameData, _effectsCount, this, _playerStartPos);
 
             _controllersManager.Initialization();
         }
