@@ -7,5 +7,6 @@ namespace TankGame
     public interface IPlayerModel
     {
         public GameObject Tank { get; }
+        public Transform ShellStartPosition { get; set; }
     }
 }

@@ -44,10 +44,11 @@ namespace TankGame
 
             _isShootDelay = true;
             var shell = _poolController.GetShell();
-            shell.transform.position = _player.position + Vector3.up;
+            shell.transform.position = _playerModel.ShellStartPosition.position;
             shell.transform.rotation = _player.rotation;
             shell.SetActive(true);
-            shell.GetComponent<Rigidbody>().AddForce((3 * _player.forward + _player.up) * 200, ForceMode.Impulse);
+            shell.GetComponent<Rigidbody>().AddForce(_playerModel.ShellStartPosition.forward * 300, ForceMode.Impulse);
+
             _gameManager.StartCoroutine(ShootDelay());
         }
 

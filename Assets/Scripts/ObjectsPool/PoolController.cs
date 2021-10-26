@@ -46,27 +46,18 @@ namespace TankGame
 
             for (int i = 0; i < _effectsCount; i++)
             {
-                InitEffectsCollection(_shellExplosionSample, _shellExplosions, _shellExplosionsContainer);
-                InitEffectsCollection(_tankExplosionSample, _tankExplosions, _tankExplosionsContainer);
-                InitShellCollection(_shellSample, _shells, _shellContainer);
+                InitCollection(_shellExplosionSample, _shellExplosions, _shellExplosionsContainer);
+                InitCollection(_tankExplosionSample, _tankExplosions, _tankExplosionsContainer);
+                InitCollection(_shellSample, _shells, _shellContainer);
             }
         }
 
-        private void InitEffectsCollection(GameObject effect, List<GameObject> collection, Transform container)
+        private void InitCollection(GameObject obj, List<GameObject> collection, Transform container)
         {
-            var effectObject = Object.Instantiate(effect, container);
-            effectObject.SetActive(false);
-            collection.Add(effectObject);
+            var poolObject = Object.Instantiate(obj, container);
+            poolObject.SetActive(false);
+            collection.Add(poolObject);
         }
-
-        private void InitShellCollection(GameObject effect, List<GameObject> collection, Transform container)
-        {
-            var shellObject = Object.Instantiate(effect, container);
-            shellObject.AddComponent<Rigidbody>().mass = 20;
-            shellObject.SetActive(false);
-            collection.Add(shellObject);
-        }
-
 
         public GameObject GetShellExplosion()
         {
