@@ -14,9 +14,6 @@ namespace TankGame
         public Transform CreatePlayer()
         {
             var playerObject = Object.Instantiate(_playerModel.Tank);
-            var shellStartPosition = playerObject.transform.GetChild(0);
-            _playerModel.ShellStartPosition = shellStartPosition;
-            playerObject.name = "Player";
 
             return playerObject.transform;
         }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TankGame
@@ -8,7 +6,9 @@ namespace TankGame
     public class PlayerModelData : ScriptableObject
     {
         [SerializeField] private GameObject _tankPrefab;
+        [SerializeField] private int _shootForce;
 
         public GameObject TankPrefab => _tankPrefab;
+        public int ShootForce => _shootForce;
     }
 }

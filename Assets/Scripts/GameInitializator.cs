@@ -9,13 +9,11 @@ namespace TankGame
         {
             var inputController = new InputController(gameData);
             var poolController = new PoolController(gameData, effectsCount, gameManager);
-            var playerModel = new PlayerModel(gameData.PlayerModelData.TankPrefab);
+            var playerModel = new PlayerModel(gameData.PlayerModelData);
             var playerFactory = new PlayerFactory(playerModel);
             var playerInitialization = new PlayerInitialization(playerFactory, playerPosition);
-
-            var playerView = new PlayerView();
-            var playerController = new PlayerController(playerModel, playerView, inputController, playerInitialization.GetPlayer(),
-                                        poolController, gameManager);
+            var playerView = playerInitialization.GetPlayer().GetComponent<PlayerView>();
+            var playerController = new PlayerController(playerModel, playerView, inputController, poolController);
 
 
 

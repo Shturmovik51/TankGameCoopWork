@@ -8,20 +8,16 @@ namespace TankGame
         private PlayerModel _playerModel;
         private PlayerView _playerView;
         private InputController _inputController;
-        private Transform _player;
         private PoolController _poolController;
-        private GameManager _gameManager;
         private bool _isShootDelay;
 
-        public PlayerController(PlayerModel playerModel, PlayerView playerView, InputController inputController, Transform player,
-                       PoolController poolController, GameManager gameManager)
+        public PlayerController(PlayerModel playerModel, PlayerView playerView, InputController inputController,
+                    PoolController poolController)
         {
             _playerModel = playerModel;
             _playerView = playerView;
             _inputController = inputController;
-            _player = player;
             _poolController = poolController;
-            _gameManager = gameManager;
         }
         public void Initialization()
         {
@@ -44,12 +40,8 @@ namespace TankGame
 
             _isShootDelay = true;
             var shell = _poolController.GetShell();
-            shell.transform.position = _playerModel.ShellStartPosition.position;
-            shell.transform.rotation = _player.rotation;
-            shell.SetActive(true);
-            shell.GetComponent<Rigidbody>().AddForce(_playerModel.ShellStartPosition.forward * 300, ForceMode.Impulse);
-
-            _gameManager.StartCoroutine(ShootDelay());
+            _playerView.Shoot(shell, _playerModel.ShootForce);
+            _playerView.StartCoroutine(ShootDelay());
         }
 
         private IEnumerator ShootDelay()

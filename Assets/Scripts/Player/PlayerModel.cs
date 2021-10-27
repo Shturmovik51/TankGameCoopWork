@@ -1,16 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TankGame
 {
     public class PlayerModel : IPlayerModel
     {
-        public GameObject Tank { get; }     
-        public Transform ShellStartPosition { get; set; }
-        public PlayerModel(GameObject tank)
+        public GameObject Tank { get; }
+
+        public int ShootForce { get; }
+        public PlayerModel(PlayerModelData playerModelData)
         {
-            Tank = tank;
+            Tank = playerModelData.TankPrefab;
+            ShootForce = playerModelData.ShootForce;
         }
     }
 }
