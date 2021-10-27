@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TankGame
 {
-    public class PlayerView : MonoBehaviour, IDamagable
+    public class EnemyView : MonoBehaviour, IDamagable
     {
         public Action<int> OnTakeDamage { get; set; }
 

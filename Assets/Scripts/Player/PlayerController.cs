@@ -22,11 +22,13 @@ namespace TankGame
         public void Initialization()
         {
             _inputController.OnClickShootButton += PlayerShoot;
+            _playerView.OnTakeDamage += TakeDamage;
         }
 
         public void CleanUp()
         {
             _inputController.OnClickShootButton -= PlayerShoot;
+            _playerView.OnTakeDamage -= TakeDamage;
         }
 
         public void LocalUpdate(float deltaTime)
@@ -40,8 +42,15 @@ namespace TankGame
 
             _isShootDelay = true;
             var shell = _poolController.GetShell();
-            _playerView.Shoot(shell, _playerModel.ShootForce);
+            shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce);
+            _playerView.Shoot(shell, _playerModel.ShootLaunchForce);
             _playerView.StartCoroutine(ShootDelay());
+        }
+        private void TakeDamage(int value)
+        {
+            _playerModel.Health -= value;
+            _playerView.StartCoroutine(ShootDelay());
+            Debug.Log($"PlayerHealth {_playerModel.Health}");
         }
 
         private IEnumerator ShootDelay()

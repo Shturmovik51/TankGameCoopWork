@@ -6,6 +6,7 @@ namespace TankGame
     {
         [SerializeField] private int _effectsCount;
         [SerializeField] private Transform _playerStartPos;
+        [SerializeField] private Transform _enemyStartPos;
 
         private ControllersManager _controllersManager;
         private GameData _gameData;
@@ -16,7 +17,7 @@ namespace TankGame
             _controllersManager = new ControllersManager();
             _gameData = (GameData) Resources.Load("GameData");
 
-            new GameInitializator(_controllersManager, _gameData, _effectsCount, this, _playerStartPos);
+            new GameInitializator(_controllersManager, _gameData, _effectsCount, this, _playerStartPos, _enemyStartPos);
 
             _controllersManager.Initialization();
         }

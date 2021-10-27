@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace TankGame
 {
-    public interface IPlayerModel
+    public interface IEnemyModel
     {
         public GameObject Tank { get; }
         public int ShootLaunchForce { get; }

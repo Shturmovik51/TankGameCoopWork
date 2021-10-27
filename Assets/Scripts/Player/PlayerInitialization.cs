@@ -12,6 +12,7 @@ namespace TankGame
             _playerFactory = playerFactory;
             _player = _playerFactory.CreatePlayer();
             _player.position = playerPosition.position;
+            _player.rotation = playerPosition.rotation;
         }
 
         public Transform GetPlayer()
