@@ -5,7 +5,7 @@ namespace TankGame
     public sealed class GameInitializator
     {
         public GameInitializator(ControllersManager controllersManager, GameData gameData, int effectsCount,
-                    GameManager gameManager, Transform playerPosition, Transform enemyPosition)
+                    GameManager gameManager, Transform playerPosition, Transform enemyPosition, UIFields uIFields)
         {
             var inputController = new InputController(gameData);
             var poolController = new PoolController(gameData, effectsCount, gameManager);
@@ -22,10 +22,13 @@ namespace TankGame
             var enemyView = enemyInitialisation.GetEnemy().GetComponent<EnemyView>();
             var enemyController = new EnemyController(enemyModel, enemyView, poolController);
 
+            var turnPanelController = new TurnPanelController(uIFields, enemyView, playerView);
+
             controllersManager.Add(inputController);
             controllersManager.Add(poolController); 
             controllersManager.Add(playerController);
             controllersManager.Add(enemyController);
+            controllersManager.Add(turnPanelController);
         }
     }
 }

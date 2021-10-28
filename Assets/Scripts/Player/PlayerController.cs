@@ -44,21 +44,13 @@ namespace TankGame
             var shell = _poolController.GetShell();
             shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce);
             _playerView.Shoot(shell, _playerModel.ShootLaunchForce);
-            _playerView.StartCoroutine(ShootDelay());
         }
         private void TakeDamage(int value)
         {
-            _playerModel.Health -= value;
-            _playerView.StartCoroutine(ShootDelay());
-            Debug.Log($"PlayerHealth {_playerModel.Health}");
-        }
-
-        private IEnumerator ShootDelay()
-        {
-            yield return new WaitForSeconds(5);
             _isShootDelay = false;
-        }
-
-
+            _playerModel.Health -= value;
+            Debug.Log($"PlayerHealth {_playerModel.Health}");
+            _playerView.OnChangeTurn?.Invoke();
+        }  
     }
 }

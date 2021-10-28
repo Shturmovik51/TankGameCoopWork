@@ -17,7 +17,7 @@ namespace TankGame
         }
 
         public void Initialization()
-        {
+        {            
             _enemyView.OnTakeDamage += TakeDamage;
         }
 
@@ -43,6 +43,7 @@ namespace TankGame
             _enemyModel.Health -= value;
             _enemyView.StartCoroutine(ShootDelay());
             Debug.Log($"PlayerHealth {_enemyModel.Health}");
+            _enemyView.OnChangeTurn?.Invoke();
         }
 
         private IEnumerator ShootDelay()
