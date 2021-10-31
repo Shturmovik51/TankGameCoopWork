@@ -45,7 +45,7 @@ namespace TankGame
             shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce);
             _playerView.Shoot(shell, _playerModel.ShootLaunchForce);
         }
-        private void TakeDamage(int value)
+        private void TakeDamage(int value, IDamagable iD)
         {
             _isShootDelay = false;
             _playerModel.Health -= value;

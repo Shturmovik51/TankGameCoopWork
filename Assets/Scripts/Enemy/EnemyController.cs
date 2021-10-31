@@ -5,25 +5,31 @@ namespace TankGame
 {
     public class EnemyController: IInitializable, ICleanable, IUpdatable, IController
     {
-        private EnemyModel _enemyModel;
-        private EnemyView _enemyView;
+        private EnemyModel[] _enemyModels;
+        private EnemyView[] _enemyViews;
         private PoolController _poolController;
 
-        public EnemyController(EnemyModel enemyModel, EnemyView enemyView, PoolController poolController)
+        public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController)
         {
-            _enemyModel = enemyModel;
-            _enemyView = enemyView;
+            _enemyModels = enemyModels;
+            _enemyViews = enemyViews;
             _poolController = poolController;
         }
 
         public void Initialization()
-        {            
-            _enemyView.OnTakeDamage += TakeDamage;
+        {
+            foreach (var view in _enemyViews)
+            {
+                view.OnTakeDamage += TakeDamage;
+            }
         }
 
         public void CleanUp()
         {
-            _enemyView.OnTakeDamage -= TakeDamage;
+            foreach (var view in _enemyViews)
+            {
+                view.OnTakeDamage -= TakeDamage;
+            }
         }
 
         public void LocalUpdate(float deltaTime)
@@ -31,25 +37,36 @@ namespace TankGame
 
         }
 
-        private void EnemyShoot()
+        public void TargetStatusInvertor(int iD)
+        {
+            _enemyModels[iD].IsTarget = !_enemyModels[iD].IsTarget;
+        }
+
+        private void EnemyShoot(int enemyID)
         { 
             var shell = _poolController.GetShell();
-            shell.GetComponent<Shell>().SetDamageValue(_enemyModel.ShootDamageForce);
-            _enemyView.Shoot(shell, _enemyModel.ShootLaunchForce);
+            shell.GetComponent<Shell>().SetDamageValue(_enemyModels[enemyID].ShootDamageForce);
+            _enemyViews[enemyID].Shoot(shell, _enemyModels[enemyID].ShootLaunchForce);
         }
 
-        private void TakeDamage(int value)
+        private void TakeDamage(int value, IDamagable view)
         {
-            _enemyModel.Health -= value;
-            _enemyView.StartCoroutine(ShootDelay());
-            Debug.Log($"PlayerHealth {_enemyModel.Health}");
-            _enemyView.OnChangeTurn?.Invoke();
+            for (int i = 0; i < _enemyViews.Length; i++)
+            {
+                if((IDamagable)_enemyViews[i] == view)
+                {
+                    _enemyModels[i].Health -= value;
+                    _enemyViews[i].StartCoroutine(ShootDelay(i));
+                    Debug.Log($"PlayerHealth {_enemyModels[i].Health}");
+                    _enemyViews[i].OnChangeTurn?.Invoke(i);
+                }
+            }
         }
 
-        private IEnumerator ShootDelay()
+        private IEnumerator ShootDelay(int enemyID)
         {
             yield return new WaitForSeconds(2);
-            EnemyShoot();
+            EnemyShoot(enemyID);
         }
     }
 }

@@ -5,19 +5,23 @@ namespace TankGame
     public class EnemyInitialization
     {
         private EnemyFactory _enemyFactory;
-        private Transform _enemy;
+        private Transform[] _enemies;
 
-        public EnemyInitialization(EnemyFactory enemyFactory, Transform enemyPosition)
+        public EnemyInitialization(EnemyFactory enemyFactory, Transform[] enemyPositions)
         {
             _enemyFactory = enemyFactory;
-            _enemy = _enemyFactory.CreateEnemy();
-            _enemy.position = enemyPosition.position;
-            _enemy.rotation = enemyPosition.rotation;
+            _enemies = _enemyFactory.CreateEnemies();
+
+            for (int i = 0; i < _enemies.Length; i++)
+            {
+                _enemies[i].position = enemyPositions[i].position;
+                _enemies[i].rotation = enemyPositions[i].rotation;
+            }
         }
 
-        public Transform GetEnemy()
+        public Transform GetEnemies(int iD)
         {            
-            return _enemy;
+            return _enemies[iD];
         }
     }
 }

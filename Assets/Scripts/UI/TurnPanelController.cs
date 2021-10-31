@@ -1,42 +1,62 @@
+using System;
 using TMPro;
 
 namespace TankGame
 {
     public class TurnPanelController: IInitializable, ICleanable, IController
     {
+        public event Action OnSetEnemyTurn;
+        public event Action OnSetPlayerTurn;
+
         private TextMeshProUGUI _turnText;
-        private EnemyView _enemyView;
+        private EnemyView[] _enemyViews;
         private PlayerView _playerView;
-        public TurnPanelController(UIFields uIFields, EnemyView enemyView, PlayerView playerView)
+        private bool isEnemyTurn;
+        public TurnPanelController(UIFields uIFields, EnemyView[] enemyViews, PlayerView playerView)
         {
             _turnText = uIFields.TurnText;
-            _enemyView = enemyView;
+            _enemyViews = enemyViews;
             _playerView = playerView;
         }
 
         public void Initialization()
         {
-            _enemyView.OnChangeTurn += SetEnemyTurn;
+            foreach (var view in _enemyViews)
+            {
+                view.OnChangeTurn += SetEnemyTurn;
+            }
+            
             _playerView.OnChangeTurn += SetPlayerTurn;
-
             SetPlayerTurn();
         }
 
         public void CleanUp()
         {
-            _enemyView.OnChangeTurn -= SetEnemyTurn;
+            foreach (var view in _enemyViews)
+            {
+                view.OnChangeTurn -= SetEnemyTurn;
+            }
+
             _playerView.OnChangeTurn -= SetPlayerTurn;
         }
 
         private void SetPlayerTurn()
         {
-            _turnText.text = Strings.PlayerTurn;
+            OnSetPlayerTurn?.Invoke();
+
+            isEnemyTurn = false;
+            _turnText.text = "Player Turn";
         }
 
-        private void SetEnemyTurn()
+        private void SetEnemyTurn(int iD)
         {
-            _turnText.text = Strings.EnemyTurn;
-        }
+            if (!isEnemyTurn)
+            {
+                OnSetEnemyTurn?.Invoke();
+            }
 
+            isEnemyTurn = true;
+            _turnText.text = $"Enemy {iD + 1} Turn";
+        }
     }
 }

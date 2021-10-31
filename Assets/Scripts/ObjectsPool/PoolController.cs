@@ -22,9 +22,9 @@ namespace TankGame
         private List<GameObject> _shells;
         public PoolController(GameData gameData, int effectsCount, GameManager gamemanager)
         {
-            _shellExplosionSample = gameData.EffectsData.ShellExplosion;
-            _tankExplosionSample = gameData.EffectsData.TankExplosion;
-            _shellSample = gameData.EffectsData.Shell;
+            _shellExplosionSample = gameData.PrefabsData.ShellExplosion;
+            _tankExplosionSample = gameData.PrefabsData.TankExplosion;
+            _shellSample = gameData.PrefabsData.Shell;
 
             _effectsCount = effectsCount;
             _gameManager = gamemanager;

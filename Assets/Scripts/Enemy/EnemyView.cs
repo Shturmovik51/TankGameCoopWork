@@ -5,8 +5,8 @@ namespace TankGame
 {
     public class EnemyView : MonoBehaviour, IDamagable
     {
-        public Action<int> OnTakeDamage { get; set; }
-        public Action OnChangeTurn;
+        public Action<int, IDamagable> OnTakeDamage { get; set; }
+        public Action<int> OnChangeTurn;
 
         [SerializeField] private Transform ShellStartPosition;
 
