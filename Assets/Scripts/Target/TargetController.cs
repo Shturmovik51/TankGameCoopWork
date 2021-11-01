@@ -6,12 +6,12 @@ namespace TankGame
     {
         private EnemyView[] _enemyViews;
         private EnemyModel[] _enemyModels;
-        private TurnPanelController _turnPanelController;
+        private TurnController _turnPanelController;
         private GameObject _targetMarker;
         private InputController _inputController;
         private bool _isOnSearchTarget;
         private int _targetID;
-        public TargetController(EnemyView[] enemyViews, EnemyModel[] enemyModels, TurnPanelController turnPanelController, 
+        public TargetController(EnemyView[] enemyViews, EnemyModel[] enemyModels, TurnController turnPanelController, 
                                     GameData gameData, InputController inputController)
         {
             _enemyViews = enemyViews;
@@ -24,8 +24,8 @@ namespace TankGame
 
         public void Initialization()
         {
-            _turnPanelController.OnSetEnemyTurn += StartSearchTarget;
-            _turnPanelController.OnSetPlayerTurn += StopSearchTarget;
+            _turnPanelController.OnSetEnemyTurn += StopSearchTarget;
+            _turnPanelController.OnSetPlayerTurn += StartSearchTarget;
             _inputController.OnClickNextTarget += NextTarget;
             _inputController.OnClickPreviousTarget += PreviousTarget;
             _isOnSearchTarget = true;
@@ -33,6 +33,7 @@ namespace TankGame
             _targetMarker = Object.Instantiate(_targetMarker);
             _targetMarker.SetActive(false);
 
+            ChangeTargetStatus(_targetID);
             SetTargetMarker();
         }
 
@@ -53,7 +54,7 @@ namespace TankGame
         }
 
         private void StartSearchTarget()
-        {
+        {            
             _isOnSearchTarget = true;
             SetTargetMarker();
         }
@@ -66,28 +67,37 @@ namespace TankGame
 
         private void NextTarget()
         {
-            _enemyModels[_targetID].IsTarget = false;
+            if (!_isOnSearchTarget) return;
+
+            ChangeTargetStatus(_targetID);
             _targetID++;
 
             if (_targetID > _enemyModels.Length - 1)
                 _targetID = 0;
 
-            _enemyModels[_targetID].IsTarget = true;
+            ChangeTargetStatus(_targetID);
 
             SetTargetMarker();
         }
 
         private void PreviousTarget()
         {
-            _enemyModels[_targetID].IsTarget = false;
+            if (!_isOnSearchTarget) return;
+
+            ChangeTargetStatus(_targetID);
             _targetID--;
 
             if (_targetID < 0)
                 _targetID = _enemyModels.Length - 1;
 
-            _enemyModels[_targetID].IsTarget = true;
+            ChangeTargetStatus(_targetID);
 
             SetTargetMarker();
+        }
+
+        private void ChangeTargetStatus(int iD)
+        {
+            _enemyModels[iD].IsTarget = !_enemyModels[iD].IsTarget;
         }
 
         private void SetTargetMarker()

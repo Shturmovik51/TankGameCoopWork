@@ -39,7 +39,7 @@ namespace TankGame
         private void FixedUpdate()
         {
             var fixedDeltaTime = Time.fixedDeltaTime;
-            _controllersManager.LocalLateUpdate(fixedDeltaTime);
+            _controllersManager.LocalFixedUpdate(fixedDeltaTime);
         }
 
         private void OnDestroy()

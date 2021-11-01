@@ -32,18 +32,19 @@ namespace TankGame
                 enemyViews[i] = enemyInitialisation.GetEnemies(i).GetComponent<EnemyView>();
             } 
 
-            var enemyController = new EnemyController(enemyModels, enemyViews, poolController);
-            var turnPanelController = new TurnPanelController(uIFields, enemyViews, playerView);
-            var targetController = new TargetController(enemyViews, enemyModels, turnPanelController, gameData, inputController);
+            var enemyController = new EnemyController(enemyModels, enemyViews, poolController, playerView);
+            var turnController = new TurnController(uIFields, enemyViews, playerView);
+            var targetController = new TargetController(enemyViews, enemyModels, turnController, gameData, inputController);
+            var targetprovider = new TargetProvider(enemyModels, enemyViews);
 
-
-
+            playerController.TargetProvider = targetprovider;
+            playerController._enemies = enemyViews;
 
             controllersManager.Add(inputController);
             controllersManager.Add(poolController); 
             controllersManager.Add(playerController);
             controllersManager.Add(enemyController);
-            controllersManager.Add(turnPanelController);
+            controllersManager.Add(turnController);
             controllersManager.Add(targetController);
         }
     }

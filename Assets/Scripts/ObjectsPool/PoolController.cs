@@ -79,7 +79,7 @@ namespace TankGame
             var effect = effectPool[0];
             effectPool.Remove(effect);
             _gameManager.StartCoroutine(EffectTimer(effect, effectPool));
-            return effect;
+            return effect;      
         }
 
         private IEnumerator EffectTimer(GameObject effect, List<GameObject> effectPool)
