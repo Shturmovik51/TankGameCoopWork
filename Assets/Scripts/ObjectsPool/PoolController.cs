@@ -22,9 +22,9 @@ namespace TankGame
         private List<GameObject> _shells;
         public PoolController(GameData gameData, int effectsCount, GameManager gamemanager)
         {
-            _shellExplosionSample = gameData.EffectsData.ShellExplosion;
-            _tankExplosionSample = gameData.EffectsData.TankExplosion;
-            _shellSample = gameData.EffectsData.Shell;
+            _shellExplosionSample = gameData.PrefabsData.ShellExplosion;
+            _tankExplosionSample = gameData.PrefabsData.TankExplosion;
+            _shellSample = gameData.PrefabsData.Shell;
 
             _effectsCount = effectsCount;
             _gameManager = gamemanager;
@@ -79,7 +79,7 @@ namespace TankGame
             var effect = effectPool[0];
             effectPool.Remove(effect);
             _gameManager.StartCoroutine(EffectTimer(effect, effectPool));
-            return effect;
+            return effect;      
         }
 
         private IEnumerator EffectTimer(GameObject effect, List<GameObject> effectPool)

@@ -8,6 +8,7 @@ namespace TankGame
         public int ShootLaunchForce { get; }
         public int ShootDamageForce { get; }
         public int Health { get; set; }
+        public bool IsTarget { get; set; }
         public EnemyModel(EnemyModelData enemyModelData)
         {
             Tank = enemyModelData.TankPrefab;

@@ -4,18 +4,24 @@ namespace TankGame
 {
     public class EnemyFactory
     {
-        private IEnemyModel _enemyModel;
+        private IEnemyModel[] _enemyModels;
 
-        public EnemyFactory(IEnemyModel enemyModel)
+        public EnemyFactory(IEnemyModel[] enemyModels)
         {
-            _enemyModel = enemyModel;
+            _enemyModels = enemyModels;
         }
 
-        public Transform CreateEnemy()
+        public Transform[] CreateEnemies()
         {
-            var enemyObject = Object.Instantiate(_enemyModel.Tank);
+            var transforms = new Transform[_enemyModels.Length];
 
-            return enemyObject.transform;
+            for (int i = 0; i < _enemyModels.Length; i++)
+            {
+                var enemyObject = Object.Instantiate(_enemyModels[i].Tank).transform;
+                transforms[i] = enemyObject;
+            }
+
+            return transforms;
         }
     }
 }

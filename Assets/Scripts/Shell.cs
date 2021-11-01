@@ -9,7 +9,7 @@ namespace TankGame
         {
             if(other.TryGetComponent(out IDamagable damagableObject))
             {
-                damagableObject.OnTakeDamage?.Invoke(_damageValue);
+                damagableObject.OnTakeDamage?.Invoke(_damageValue, damagableObject);
             }
         }
 

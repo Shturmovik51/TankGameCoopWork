@@ -7,12 +7,12 @@ namespace TankGame
     {
         [SerializeField] private InputKeysData _inputKeysData;
         [SerializeField] private PlayerModelData _playerModelData;
-        [SerializeField] private EnemyModelData _enemyModelData;
-        [SerializeField] private PoolData _effectsData;
+        [SerializeField] private EnemyModelData[] _enemyModelsData;
+        [SerializeField] private PrefabsData _prefabsData;
 
         public InputKeysData InputKeysData => _inputKeysData;
         public PlayerModelData PlayerModelData => _playerModelData;
-        public EnemyModelData EnemyModelData => _enemyModelData;
-        public PoolData EffectsData => _effectsData;        
+        public EnemyModelData[] EnemyModelsData => _enemyModelsData;
+        public PrefabsData PrefabsData => _prefabsData;        
     }
 }

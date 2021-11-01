@@ -6,7 +6,7 @@ namespace TankGame
     {
         [SerializeField] private int _effectsCount;
         [SerializeField] private Transform _playerStartPos;
-        [SerializeField] private Transform _enemyStartPos;
+        [SerializeField] private Transform[] _enemyStartPositions;
         [SerializeField] private UIFields _uIFields;
 
         private ControllersManager _controllersManager;
@@ -18,7 +18,8 @@ namespace TankGame
             _controllersManager = new ControllersManager();
             _gameData = (GameData) Resources.Load("GameData");
 
-            new GameInitializator(_controllersManager, _gameData, _effectsCount, this, _playerStartPos, _enemyStartPos, _uIFields);
+            new GameInitializator(_controllersManager, _gameData, _effectsCount, this, _playerStartPos, 
+                                    _enemyStartPositions, _uIFields);
 
             _controllersManager.Initialization();
         }
@@ -38,7 +39,7 @@ namespace TankGame
         private void FixedUpdate()
         {
             var fixedDeltaTime = Time.fixedDeltaTime;
-            _controllersManager.LocalLateUpdate(fixedDeltaTime);
+            _controllersManager.LocalFixedUpdate(fixedDeltaTime);
         }
 
         private void OnDestroy()
