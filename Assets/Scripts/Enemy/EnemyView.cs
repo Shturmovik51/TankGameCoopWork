@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TankGame
 {
@@ -15,6 +16,9 @@ namespace TankGame
         private bool _isOnRotation;
         private float _lerpProgress;
         private float _rotationTime = 1;
+
+        private EntityStatsPanel _tankStatsPanel;
+
         public bool IsOnRotation => _isOnRotation;
 
         [SerializeField] private Transform ShellStartPosition;
@@ -27,6 +31,12 @@ namespace TankGame
             var shellRigidBody = shell.GetComponent<Rigidbody>();
             shellRigidBody.velocity = Vector3.zero;
             shellRigidBody.AddForce(ShellStartPosition.forward * shootForce, ForceMode.Impulse);
+        }
+
+        public void InitStatsPanel(EntityStatsPanel tankStatsPanel, int enemyID)
+        {
+            _tankStatsPanel = tankStatsPanel;
+            _tankStatsPanel.UpdateTitle($"Enemy {enemyID}");
         }
 
         public void SetStartRotationParameters(Transform target)
@@ -50,6 +60,11 @@ namespace TankGame
                 _isOnRotation = false;
                 OnReadyToShoot?.Invoke();
             }
+        }
+
+        public void UpdateStatsPanel(float barValue, Sprite icon)
+        {
+            _tankStatsPanel.UpdateElement(icon).UpdateHP(barValue);
         }
     }
 }
