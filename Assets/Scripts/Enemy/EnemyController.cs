@@ -28,7 +28,8 @@ namespace TankGame
             for (int i = 0; i < _enemyViews.Length; i++)
             {
                 _enemyModels[i].Ability = _abilitiesController.GetRandomAbility();
-                _enemyViews[i].UpdateStatsPanel(1, _enemyModels[i].Ability.Icon);
+                var barValue = (float)_enemyModels[i].Health.HP / _enemyModels[i].Health.MaxHP;
+                _enemyViews[i].UpdateStatsPanel(barValue, _enemyModels[i].Ability.Icon);
                 _enemyViews[i].OnTakeDamage += TakeDamage;
                 _enemyViews[i].OnReadyToShoot += StartEnemyShootDelay;
             }
@@ -86,8 +87,8 @@ namespace TankGame
             {
                 if((IDamagable)_enemyViews[i] == view)
                 {
-                    _enemyModels[i].Health -= value;
-                    var barValue = (float)_enemyModels[i].Health / _enemyModels[i].MaxHealth;
+                    _enemyModels[i].Health.TakeDamage(value);
+                    var barValue = (float)_enemyModels[i].Health.HP / _enemyModels[i].Health.MaxHP;
                     _enemyViews[i].UpdateStatsPanel(barValue, _enemyModels[i].Ability.Icon);
                     //Debug.Log($"EnemyHealth {_enemyModels[i].Health}");
                     _curentEnemy = 0;
