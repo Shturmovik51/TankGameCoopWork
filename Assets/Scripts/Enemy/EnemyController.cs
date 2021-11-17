@@ -8,24 +8,29 @@ namespace TankGame
         private EnemyModel[] _enemyModels;
         private EnemyView[] _enemyViews;
         private PoolController _poolController;
+        private AbilitiesFactory _abilitiesController;
         private int _curentEnemy;
         private bool _isRevenge;
         private Transform _targetPosition;
 
-        public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController, PlayerView playerView)
+        public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController, 
+                        PlayerView playerView, AbilitiesFactory abilitiesController)
         {
             _enemyModels = enemyModels;
             _enemyViews = enemyViews;
             _poolController = poolController;
             _targetPosition = playerView.transform;
+            _abilitiesController = abilitiesController;
         }
 
         public void Initialization()
         {
-            foreach (var view in _enemyViews)
+            for (int i = 0; i < _enemyViews.Length; i++)
             {
-                view.OnTakeDamage += TakeDamage;
-                view.OnReadyToShoot += StartEnemyShootDelay;
+                _enemyModels[i].Ability = _abilitiesController.GetRandomAbility();
+                _enemyViews[i].UpdateStatsPanel(1, _enemyModels[i].Ability.Icon);
+                _enemyViews[i].OnTakeDamage += TakeDamage;
+                _enemyViews[i].OnReadyToShoot += StartEnemyShootDelay;
             }
         }
 
@@ -82,8 +87,11 @@ namespace TankGame
                 if((IDamagable)_enemyViews[i] == view)
                 {
                     _enemyModels[i].Health -= value;
-                    Debug.Log($"EnemyHealth {_enemyModels[i].Health}");
+                    var barValue = (float)_enemyModels[i].Health / _enemyModels[i].MaxHealth;
+                    _enemyViews[i].UpdateStatsPanel(barValue, _enemyModels[i].Ability.Icon);
+                    //Debug.Log($"EnemyHealth {_enemyModels[i].Health}");
                     _curentEnemy = 0;
+
                     RevengeTurn();
 
                     _enemyViews[_curentEnemy].OnChangeTurn?.Invoke(_curentEnemy);
