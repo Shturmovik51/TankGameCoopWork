@@ -6,6 +6,7 @@ namespace TankGame
     {
         public Sprite Icon { get; }
         public AbilityType Type { get; }
+        public int CD { get; }
         public int ID { get; }
     }
 }

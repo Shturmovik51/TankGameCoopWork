@@ -8,26 +8,26 @@ namespace TankGame
         private EnemyModel[] _enemyModels;
         private EnemyView[] _enemyViews;
         private PoolController _poolController;
-        private AbilitiesFactory _abilitiesController;
+        private AbilitiesManager _abilitiesManager;
         private int _curentEnemy;
         private bool _isRevenge;
         private Transform _targetPosition;
 
         public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController, 
-                        PlayerView playerView, AbilitiesFactory abilitiesController)
+                        PlayerView playerView, AbilitiesManager abilitiesManager)
         {
             _enemyModels = enemyModels;
             _enemyViews = enemyViews;
             _poolController = poolController;
             _targetPosition = playerView.transform;
-            _abilitiesController = abilitiesController;
+            _abilitiesManager = abilitiesManager;
         }
 
         public void Initialization()
         {
             for (int i = 0; i < _enemyViews.Length; i++)
             {
-                _enemyModels[i].Ability = _abilitiesController.GetRandomAbility();
+                _enemyModels[i].Ability = _abilitiesManager.GetRandomAbility();
                 var barValue = (float)_enemyModels[i].Health.HP / _enemyModels[i].Health.MaxHP;
                 _enemyViews[i].UpdateStatsPanel(barValue, _enemyModels[i].Ability.Icon);
                 _enemyViews[i].OnTakeDamage += TakeDamage;
@@ -40,6 +40,7 @@ namespace TankGame
             foreach (var view in _enemyViews)
             {
                 view.OnTakeDamage -= TakeDamage;
+                view.OnReadyToShoot -= StartEnemyShootDelay;
             }
         }
 

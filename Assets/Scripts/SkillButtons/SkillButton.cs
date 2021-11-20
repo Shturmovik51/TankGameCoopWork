@@ -7,26 +7,23 @@ namespace TankGame
     public class SkillButton
     {
         public Button Button { get; }
-        public Image CDImage { get; }
-        public string Description { get; }
-        public TextMeshProUGUI TextField { get; }
+        public AbilityType AbilityType { get; }
+        public Image SkillImage { get; }
         public TextMeshProUGUI CDText { get; }
         public int MaxCD { get; }
-        public AbilityType ElementType { get; }
         public int CurrentCD { get; set; }
         public bool IsActive { get; set; }
 
-        public SkillButton(Button button, Image cDImage, int maxCD, string description, AbilityType elementType, TextMeshProUGUI cDText)
+        public SkillButton(Button button, int maxCD, AbilityType abilityType, Sprite skillIcon)
         {
             Button = button;
-            CDImage = cDImage;
-            TextField = button.GetComponentInChildren<TextMeshProUGUI>();
-            CDText = cDText;
+            AbilityType = abilityType;
+            SkillImage = Button.GetComponent<Image>();
+            SkillImage.sprite = skillIcon;     
+            CDText = Button.GetComponentInChildren<TextMeshProUGUI>();
+            CDText.gameObject.SetActive(false);
             MaxCD = maxCD;
             CurrentCD = maxCD;
-            Description = description;
-            ElementType = elementType;
-            TextField.text = description;
         }
     }
 }

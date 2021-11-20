@@ -6,9 +6,9 @@ namespace TankGame
     {
         public GameObject Tank { get; }
         public int ShootLaunchForce { get; }
+        public Health Health { get; }
         public int ShootDamageForce { get; }
         public bool IsTarget { get; set; }
-        public Health Health { get; }
         public Ability Ability { get; set; }
         public EnemyModel(EnemyModelData enemyModelData)
         {

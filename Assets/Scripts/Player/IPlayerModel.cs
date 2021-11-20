@@ -7,6 +7,7 @@ namespace TankGame
         public GameObject Tank { get; }
         public int ShootLaunchForce { get; }
         public int ShootDamageForce { get; }
-        public int Health { get; set; }
+        public Health Health { get; }
+        public Ability Ability { get; set; }
     }
 }

@@ -1,15 +1,27 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TankGame
 {
     public class PlayerView : MonoBehaviour, IDamagable
     {
+        [SerializeField] private Transform ShellStartPosition;
         public Action<int, IDamagable> OnTakeDamage { get; set; }
         public Action OnChangeTurn;
         private int _rotationSpeed = 2;
+        private Image _healthBar;
 
-        [SerializeField] private Transform ShellStartPosition;
+        public void InitStatsPanel(GameObject playerPanel)
+        {
+            var images = playerPanel.GetComponentsInChildren<Image>();
+            for (int i = 0; i < images.Length; i++)
+            {
+                if (images[i].type == Image.Type.Filled)
+                    _healthBar = images[i];
+            }
+        }
 
         public void Shoot(GameObject shell, int shootForce)
         {
@@ -26,6 +38,11 @@ namespace TankGame
             var pos = target.position - transform.position;
             var rot = Vector3.RotateTowards(transform.forward, pos, _rotationSpeed * deltaTime, 0.0f);
             transform.rotation = Quaternion.LookRotation(rot);
+        }
+
+        public void UpdateHealthBar(float barValue)
+        {
+            _healthBar.fillAmount = barValue;
         }
     }
 }

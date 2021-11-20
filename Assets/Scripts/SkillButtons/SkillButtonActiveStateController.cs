@@ -4,54 +4,49 @@ using UnityEngine;
 
 namespace TankGame
 {
-    //public class SkillButtonActiveStateController
-    //{
-    //    private List<SkillButton> _skillButtons;
-    //    private Ability _playerElement;
-    //    private SkillButton _activeButton;
-    //    public SkillButtonActiveStateController(List<SkillButton> skillButtons /*Player player*/)
-    //    {
-    //        _skillButtons = skillButtons;
-    //        //_playerElement = player.Parameters.Element;
+    public class SkillButtonActiveStateController
+    {
+        private List<SkillButton> _skillButtons;
+        private PlayerModel _playerModel;
+        private SkillButton _activeButton;
+        public SkillButtonActiveStateController(PlayerUIFactory playerUIFactory, PlayerModel playerModel)
+        {
+            _skillButtons = playerUIFactory.GetSkillButtons();
+            _playerModel = playerModel;
 
-    //        foreach (var button in _skillButtons)
-    //        {
-    //            button.Button.onClick.AddListener(() => SetActiveState(button));
-    //        }
-    //    }
+            foreach (var button in _skillButtons)
+            {
+                button.Button.onClick.AddListener(() => SetActiveState(button));
+            }
+        }
 
-    //    public SkillButton GetActiveButton()
-    //    {
-    //        //SkillButton activeButton = null;
-    //        //foreach (var button in _skillButtons)
-    //        //{
-    //        //    if (button.IsActive)
-    //        //        activeButton = button;
-    //        //}
-    //        ResetButtonsState();
-    //        return _activeButton;
-    //    }
+        public SkillButton GetActiveButton()
+        {            
+            ResetButtonsState();
+            return _activeButton;
+        }
 
-    //    private void SetActiveState(SkillButton button)
-    //    {
-    //        ResetButtonsState();
+        private void SetActiveState(SkillButton button)
+        {
+            ResetButtonsState();
 
-    //        button.IsActive = true;
-    //        button.Button.image.color = Color.green;
-    //        _playerElement.SetElementType(button.ElementType);
+            button.IsActive = true;
+            button.Button.image.color = Color.green;
+            _playerModel.AbilityType = button.AbilityType;
+            _playerModel.IsAbilityActive = true;
 
-    //        _activeButton = button;
-    //    }
+            _activeButton = button;
+        }
 
-    //    public void ResetButtonsState()
-    //    {
-    //        _playerElement.DeactivateElement();
+        public void ResetButtonsState()
+        {
+            _playerModel.IsAbilityActive = false;
 
-    //        foreach (var button in _skillButtons)
-    //        {
-    //            button.IsActive = false;
-    //            button.Button.image.color = Color.white;
-    //        }
-    //    }
-    //}
+            foreach (var button in _skillButtons)
+            {
+                button.IsActive = false;
+                button.Button.image.color = Color.white;
+            }
+        }
+    }
 }

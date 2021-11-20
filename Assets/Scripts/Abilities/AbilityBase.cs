@@ -65,10 +65,10 @@ namespace TankGame
             }
         }
 
-        public Ability GetItemOfID(int id)
-        {
-            return _AbilitySamples.Find(ability => ability.ID == id);
-        }
+        //public Ability GetItemOfID(int id)
+        //{
+        //    return _AbilitySamples.Find(ability => ability.ID == id);
+        //}
 
     }
 }

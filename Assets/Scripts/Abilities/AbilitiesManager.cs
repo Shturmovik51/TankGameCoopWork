@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace TankGame
 {
-    public class AbilitiesFactory
+    public class AbilitiesManager
     {
         private List<Ability> _abilities;
 
-        public AbilitiesFactory(GameData gameData)
+        public AbilitiesManager(GameData gameData)
         {
             _abilities = gameData.AbilityBase.AbilitySamples;
         }

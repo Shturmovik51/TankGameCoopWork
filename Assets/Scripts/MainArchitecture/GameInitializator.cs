@@ -6,7 +6,7 @@ namespace TankGame
     {
         public GameInitializator(ControllersManager controllersManager, GameData gameData, int effectsCount,
                     GameManager gameManager, Transform playerPosition, Transform[] enemyPositions, UIFields uIFields, 
-                        Transform enemyStatsPanelParent)
+                        Canvas canvas)
         {
             var inputController = new InputController(gameData);
             var poolController = new PoolController(gameData, effectsCount, gameManager);
@@ -28,17 +28,28 @@ namespace TankGame
             var enemyInitialisation = new EnemyInitialization(enemyFactory, enemyPositions);
             var enemyViews = new EnemyView[enemyCount];
 
-            var entityPanelFactory = new EntityStatsPanelFactory(gameData.PrefabsData.EnemyStatsPanel, enemyStatsPanelParent);
-            var abilitiesFactory = new AbilitiesFactory(gameData);
+
+            var abilitiesManager = new AbilitiesManager(gameData);
+
+            var enemiesPanel = Object.Instantiate(gameData.PrefabsData.EnemiesPanel, canvas.transform); //todo в фабрику
+            var playerPanel = Object.Instantiate(gameData.PrefabsData.PlayerPanel, canvas.transform);
+
+            var playerUIFactory = new PlayerUIFactory(gameData, playerPanel);
+
 
             for (int i = 0; i < enemyCount; i++)
             {
+                var enemyPanel = new EnemyUIFactory(gameData, enemiesPanel).GetEntityStatsPanel();
                 enemyViews[i] = enemyInitialisation.GetEnemies(i).GetComponent<EnemyView>();
-                enemyViews[i].InitStatsPanel(entityPanelFactory.GetEntityStatsPanel(), i + 1);
-            } 
+                enemyViews[i].InitStatsPanel(enemyPanel, i + 1);
+            }
 
-            var enemyController = new EnemyController(enemyModels, enemyViews, poolController, playerView, abilitiesFactory);
+            playerView.InitStatsPanel(playerPanel);
+
+            var enemyController = new EnemyController(enemyModels, enemyViews, poolController, playerView, abilitiesManager);
             var turnController = new TurnController(uIFields, enemyViews, playerView);
+            var skillButtonActiveStateController = new SkillButtonActiveStateController(playerUIFactory, playerModel);
+            var skillButtonCDStateController = new SkillButtonCDStateController(skillButtonActiveStateController, turnController, playerController);
             var targetController = new TargetController(enemyViews, enemyModels, turnController, gameData, inputController);
             var targetprovider = new TargetProvider(enemyModels, enemyViews);
 
@@ -51,6 +62,7 @@ namespace TankGame
             controllersManager.Add(enemyController);
             controllersManager.Add(turnController);
             controllersManager.Add(targetController);
+            controllersManager.Add(skillButtonCDStateController);
         }
     }
 }

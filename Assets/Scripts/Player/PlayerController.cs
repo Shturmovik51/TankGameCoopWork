@@ -6,6 +6,7 @@ namespace TankGame
 {
     public class PlayerController: IInitializable, ICleanable, IUpdatable, IController
     {
+        public event Action OnShoot;
         public TargetProvider TargetProvider;
         public EnemyView[] _enemies;
 
@@ -26,6 +27,8 @@ namespace TankGame
         }
         public void Initialization()
         {
+            UpdateHealthBar();
+
             _inputController.OnClickShootButton += PlayerShoot;
             _playerView.OnTakeDamage += TakeDamage;            
         }
@@ -49,7 +52,9 @@ namespace TankGame
         private void PlayerShoot()
         {
             if (_isShootDelay) return;
+            if (!_playerModel.IsAbilityActive) return;
 
+            OnShoot?.Invoke();
             _isShootDelay = true;
             var shell = _poolController.GetShell();
             shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce);
@@ -59,16 +64,26 @@ namespace TankGame
         private void TakeDamage(int value, IDamagable iD)
         {
             _takeDamageCount++;
+
             if (_takeDamageCount == _enemies.Length)
             {
                 _isShootDelay = false;
                 _takeDamageCount = 0;
             }
 
-            _playerModel.Health -= value;
-            Debug.Log($"PlayerHealth {_playerModel.Health}");
+            _playerModel.Health.TakeDamage(value);
+
+            UpdateHealthBar();
+
+            Debug.Log($"PlayerHealth {_playerModel.Health.HP}");
 
             _playerView.OnChangeTurn?.Invoke();
+        }
+
+        private void UpdateHealthBar()
+        {
+            var barValue = (float)_playerModel.Health.HP / _playerModel.Health.MaxHP;
+            _playerView.UpdateHealthBar(barValue);
         }
 
     }

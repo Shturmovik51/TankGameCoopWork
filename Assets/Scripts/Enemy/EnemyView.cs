@@ -17,23 +17,23 @@ namespace TankGame
         private float _lerpProgress;
         private float _rotationTime = 1;
 
-        private EntityStatsPanel _tankStatsPanel;
+        private EnemyStatsPanel _tankStatsPanel;
 
         public bool IsOnRotation => _isOnRotation;
 
-        [SerializeField] private Transform ShellStartPosition;
+        [SerializeField] private Transform _shellStartPosition;
 
         public void Shoot(GameObject shell, int shootForce)
         {     
-            shell.transform.position = ShellStartPosition.position;
+            shell.transform.position = _shellStartPosition.position;
             shell.transform.rotation = transform.rotation;
             shell.SetActive(true);
             var shellRigidBody = shell.GetComponent<Rigidbody>();
             shellRigidBody.velocity = Vector3.zero;
-            shellRigidBody.AddForce(ShellStartPosition.forward * shootForce, ForceMode.Impulse);
+            shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
         }
 
-        public void InitStatsPanel(EntityStatsPanel tankStatsPanel, int enemyID)
+        public void InitStatsPanel(EnemyStatsPanel tankStatsPanel, int enemyID)
         {
             _tankStatsPanel = tankStatsPanel;
             _tankStatsPanel.UpdateTitle($"Enemy {enemyID}");
