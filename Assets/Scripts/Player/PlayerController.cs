@@ -16,14 +16,16 @@ namespace TankGame
         private PoolController _poolController;
         private bool _isShootDelay;
         private int _takeDamageCount;
+        private DamageModifier _damageModifier;
 
         public PlayerController(PlayerModel playerModel, PlayerView playerView, InputController inputController,
-                    PoolController poolController)
+                    PoolController poolController, DamageModifier damageModifier)
         {
             _playerModel = playerModel;
             _playerView = playerView;
             _inputController = inputController;
             _poolController = poolController;
+            _damageModifier = damageModifier;
         }
         public void Initialization()
         {
@@ -57,11 +59,11 @@ namespace TankGame
             OnShoot?.Invoke();
             _isShootDelay = true;
             var shell = _poolController.GetShell();
-            shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce);
+            shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce, _playerModel.AbilityType);
             _playerView.Shoot(shell, _playerModel.ShootLaunchForce);            
         }
 
-        private void TakeDamage(int value, IDamagable iD)
+        private void TakeDamage(int value, IDamagable iD, AbilityType ownerAbility)
         {
             _takeDamageCount++;
 
@@ -71,7 +73,8 @@ namespace TankGame
                 _takeDamageCount = 0;
             }
 
-            _playerModel.Health.TakeDamage(value);
+            var modifier = _damageModifier.GetModifier(ownerAbility, _playerModel.AbilityType);
+            _playerModel.Health.TakeDamage(value * modifier);
 
             UpdateHealthBar();
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +7,7 @@ namespace TankGame
     public class PlayerView : MonoBehaviour, IDamagable
     {
         [SerializeField] private Transform ShellStartPosition;
-        public Action<int, IDamagable> OnTakeDamage { get; set; }
+        public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
         public Action OnChangeTurn;
         private int _rotationSpeed = 2;
         private Image _healthBar;

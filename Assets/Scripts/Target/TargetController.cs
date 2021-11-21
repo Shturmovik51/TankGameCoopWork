@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace TankGame
 {
-    public class TargetController : IInitializable, IUpdatable, ICleanable, IController
+    public class TargetController : IInitializable, ICleanable, IController
     {
         private EnemyView[] _enemyViews;
         private EnemyModel[] _enemyModels;
@@ -45,14 +45,6 @@ namespace TankGame
             _inputController.OnClickPreviousTarget -= PreviousTarget;
         }
 
-        public void LocalUpdate(float deltaTime)
-        {
-            if (_isOnSearchTarget)
-            {
-
-            }
-        }
-
         private void StartSearchTarget()
         {            
             _isOnSearchTarget = true;
@@ -75,8 +67,13 @@ namespace TankGame
             if (_targetID > _enemyModels.Length - 1)
                 _targetID = 0;
 
-            ChangeTargetStatus(_targetID);
+            if (_enemyModels[_targetID].IsDead)
+            {
+                NextTarget();
+                return;
+            }
 
+            ChangeTargetStatus(_targetID);
             SetTargetMarker();
         }
 
@@ -90,18 +87,27 @@ namespace TankGame
             if (_targetID < 0)
                 _targetID = _enemyModels.Length - 1;
 
+            if (_enemyModels[_targetID].IsDead)
+            {
+                PreviousTarget();
+                return;
+            }
+
             ChangeTargetStatus(_targetID);
 
             SetTargetMarker();
         }
 
         private void ChangeTargetStatus(int iD)
-        {
+        {   
             _enemyModels[iD].IsTarget = !_enemyModels[iD].IsTarget;
         }
 
         private void SetTargetMarker()
         {
+            if (_enemyModels[_targetID].IsDead)
+                NextTarget();
+
             _targetMarker.transform.position = _enemyViews[_targetID].transform.position;
 
             if(!_targetMarker.activeInHierarchy)

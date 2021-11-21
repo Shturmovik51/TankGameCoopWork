@@ -9,13 +9,15 @@ namespace TankGame
         public Health Health { get; }
         public int ShootDamageForce { get; }
         public bool IsTarget { get; set; }
+        public bool IsDead { get; set; }
         public Ability Ability { get; set; }
-        public EnemyModel(EnemyModelData enemyModelData)
+        public EnemyModel(EnemyModelData enemyModelData, AbilitiesManager abilitiesManager)
         {
             Tank = enemyModelData.TankPrefab;
             ShootLaunchForce = enemyModelData.ShootLaunchForce;
             ShootDamageForce = enemyModelData.ShootDamageForce;
             Health = new Health(enemyModelData.Health);
+            Ability = abilitiesManager.GetRandomAbility();
         }
     }
 }

@@ -10,14 +10,22 @@ namespace TankGame
         private TextMeshProUGUI _titleText;
         private Image _elementIcon;
         private Image _healthBar;
+        private Sprite _deathIcon;
 
         public EnemyStatsPanel(GameObject statsPanel)
         {
             _statsPanel = statsPanel;
             _titleText = _statsPanel.GetComponentInChildren<TextMeshProUGUI>();
             var images = _statsPanel.GetComponentsInChildren<Image>();
-            _elementIcon = images[1];
-            _healthBar = images[3];
+
+            for (int i = 0; i < images.Length; i++)
+            {
+                if(images[i].type == Image.Type.Filled)
+                    _healthBar = images[i];
+
+                if(images[i].sprite == null)
+                    _elementIcon = images[i];
+            }
         }
 
         public EnemyStatsPanel UpdateTitle(string text)
@@ -29,6 +37,10 @@ namespace TankGame
         public EnemyStatsPanel UpdateHP(float value)
         {
             _healthBar.fillAmount = value;
+
+            if (value == 0)
+                _elementIcon.sprite = _deathIcon;
+
             return this;
         }
 
@@ -36,6 +48,11 @@ namespace TankGame
         {
             _elementIcon.sprite = image;
             return this;
+        }
+
+        public void SetDeathIcon(Sprite image)
+        {
+            _deathIcon = image;
         }
     }
 }

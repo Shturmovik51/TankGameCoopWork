@@ -25,7 +25,7 @@ namespace TankGame
             {
                 var button = Object.Instantiate(_skillButtonPref).GetComponent<Button>();
                 button.transform.parent = _skillButtonsParent;
-                var skillButton = new SkillButton(button, _abilities[i].CD, _abilities[i].Type, _abilities[i].Icon);
+                var skillButton = new SkillButton(button, _abilities[i].CD, _abilities[i].Type, _abilities[i].ElementIcon);
                 
                 skillButtons.Add(skillButton);
             }

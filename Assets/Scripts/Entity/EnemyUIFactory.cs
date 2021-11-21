@@ -15,10 +15,16 @@ namespace TankGame
             _parentTransform = enemiesPanel.transform;
         }
 
-        public EnemyStatsPanel GetEntityStatsPanel()
+        public EnemyStatsPanel GetEnemyStatsPanel(EnemyModel enemyModel, int iD)
         {
             var panelObject = Object.Instantiate(_statsPanelPref, _parentTransform);
-            return new EnemyStatsPanel(panelObject);
+            var panel = new EnemyStatsPanel(panelObject);
+
+            panel.UpdateTitle($"Enemy {iD+1}")
+                 .UpdateElement(enemyModel.Ability.ElementIcon)
+                 .SetDeathIcon(enemyModel.Ability.DeathIcon);
+
+            return panel;
         }
     }
 }

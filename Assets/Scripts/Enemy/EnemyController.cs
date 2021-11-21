@@ -12,24 +12,26 @@ namespace TankGame
         private int _curentEnemy;
         private bool _isRevenge;
         private Transform _targetPosition;
+        private DamageModifier _damageModifier;
 
         public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController, 
-                        PlayerView playerView, AbilitiesManager abilitiesManager)
+                        PlayerView playerView, AbilitiesManager abilitiesManager, DamageModifier damageModifier)
         {
             _enemyModels = enemyModels;
             _enemyViews = enemyViews;
             _poolController = poolController;
             _targetPosition = playerView.transform;
             _abilitiesManager = abilitiesManager;
+            _damageModifier = damageModifier;
         }
 
         public void Initialization()
         {
             for (int i = 0; i < _enemyViews.Length; i++)
             {
-                _enemyModels[i].Ability = _abilitiesManager.GetRandomAbility();
+               // _enemyModels[i].Ability = _abilitiesManager.GetRandomAbility();
                 var barValue = (float)_enemyModels[i].Health.HP / _enemyModels[i].Health.MaxHP;
-                _enemyViews[i].UpdateStatsPanel(barValue, _enemyModels[i].Ability.Icon);
+                _enemyViews[i].UpdateHPBar(barValue);
                 _enemyViews[i].OnTakeDamage += TakeDamage;
                 _enemyViews[i].OnReadyToShoot += StartEnemyShootDelay;
             }
@@ -76,22 +78,29 @@ namespace TankGame
         private void EnemyShoot(int enemyID)
         { 
             var shell = _poolController.GetShell();
-            shell.GetComponent<Shell>().SetDamageValue(_enemyModels[enemyID].ShootDamageForce);
+            shell.GetComponent<Shell>().SetDamageValue(_enemyModels[enemyID].ShootDamageForce, _enemyModels[enemyID].Ability.Type);
             _enemyViews[enemyID].Shoot(shell, _enemyModels[enemyID].ShootLaunchForce);
 
             _enemyViews[_curentEnemy].StartCoroutine(TurnDelay());           
         }
 
-        private void TakeDamage(int value, IDamagable view)
+        private void TakeDamage(int value, IDamagable view, AbilityType ownerAbility)
         {
             for (int i = 0; i < _enemyViews.Length; i++)
             {
                 if((IDamagable)_enemyViews[i] == view)
                 {
-                    _enemyModels[i].Health.TakeDamage(value);
+                    var modifier = _damageModifier.GetModifier(ownerAbility, _enemyModels[i].Ability.Type);
+                    _enemyModels[i].Health.TakeDamage(value * modifier);
+
+                    if (_enemyModels[i].Health.HP == 0)
+                    {
+                        _enemyModels[i].IsDead = true;
+                    }
+
+
                     var barValue = (float)_enemyModels[i].Health.HP / _enemyModels[i].Health.MaxHP;
-                    _enemyViews[i].UpdateStatsPanel(barValue, _enemyModels[i].Ability.Icon);
-                    //Debug.Log($"EnemyHealth {_enemyModels[i].Health}");
+                    _enemyViews[i].UpdateHPBar(barValue);
                     _curentEnemy = 0;
 
                     RevengeTurn();

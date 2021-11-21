@@ -18,6 +18,9 @@ namespace TankGame
         public void TakeDamage(int damage)
         {
             HP -= damage;
+
+            if (HP <= 0)
+                HP = 0;
         }
     }
 }

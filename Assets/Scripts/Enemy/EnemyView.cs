@@ -6,7 +6,7 @@ namespace TankGame
 {
     public class EnemyView : MonoBehaviour, IDamagable
     {
-        public Action<int, IDamagable> OnTakeDamage { get; set; }
+        public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
         public Action<int> OnChangeTurn;
         public event Action OnReadyToShoot;
 
@@ -33,10 +33,9 @@ namespace TankGame
             shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
         }
 
-        public void InitStatsPanel(EnemyStatsPanel tankStatsPanel, int enemyID)
+        public void InitStatsPanel(EnemyStatsPanel tankStatsPanel)
         {
             _tankStatsPanel = tankStatsPanel;
-            _tankStatsPanel.UpdateTitle($"Enemy {enemyID}");
         }
 
         public void SetStartRotationParameters(Transform target)
@@ -62,9 +61,9 @@ namespace TankGame
             }
         }
 
-        public void UpdateStatsPanel(float barValue, Sprite icon)
+        public void UpdateHPBar(float barValue)
         {
-            _tankStatsPanel.UpdateElement(icon).UpdateHP(barValue);
+            _tankStatsPanel.UpdateHP(barValue);
         }
     }
 }
