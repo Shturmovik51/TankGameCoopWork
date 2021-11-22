@@ -52,8 +52,8 @@ namespace TankGame
 
         private void SetPlayerTurn()
         {
-            _playerController.SetPlayerTurn();
             OnSetPlayerTurn?.Invoke();
+            _playerController.SetPlayerTurn();
         }
 
         private void SetEnemyTurn()

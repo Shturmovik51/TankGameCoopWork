@@ -139,9 +139,8 @@ namespace TankGame
                 _curentEnemy = 0;
                 _isRevenge = false;
 
-                CheckAllDed();
-
-                OnEndTurn?.Invoke();
+                if(!CheckAllDed())
+                    OnEndTurn?.Invoke();
             }
 
             //if (_curentEnemy > _enemyModels.Length - 1)
@@ -166,24 +165,28 @@ namespace TankGame
                 _curentEnemy = 0;
                 _isRevenge = false;
 
-                CheckAllDed();
-
-                OnEndTurn?.Invoke();
+                if (!CheckAllDed())
+                    OnEndTurn?.Invoke();
             }
         }
 
-        private void CheckAllDed()
+        private bool CheckAllDed()
         {
             EnemyModel alife = null;
+
             for (int i = 0; i < _enemyModels.Length; i++)
             {
                 if (!_enemyModels[i].IsDead)
                     alife = _enemyModels[i];
             }
+
             if(alife == null)
             {
                 _endScreenController.StartWinScreen();
+                return true;
             }
+            else
+                return false;
         }
     }
 }
