@@ -11,12 +11,14 @@ namespace TankGame
         public Ability Ability { get; set; }
         public AbilityType AbilityType { get; set; }
         public bool IsAbilityActive { get; set; }
-        public PlayerModel(PlayerModelData playerModelData)
+        public int LifesCount { get; set; }
+        public PlayerModel(PlayerModelData playerModelData, RoundController roundController)
         {
             Tank = playerModelData.TankPrefab;
             ShootLaunchForce = playerModelData.ShootLaunchForce;
             ShootDamageForce = playerModelData.ShootDamageForce;
             Health = new Health(playerModelData.Health);
+            LifesCount = roundController.LifesCount;
         }
     }
 }

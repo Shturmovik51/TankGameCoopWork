@@ -7,7 +7,7 @@ namespace TankGame
     public class EnemyView : MonoBehaviour, IDamagable
     {
         public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
-        public Action<int> OnChangeTurn;
+        public Action OnChangeTurn;
         public event Action OnReadyToShoot;
 
         private Quaternion _startDirection;

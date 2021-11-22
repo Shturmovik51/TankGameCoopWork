@@ -9,5 +9,6 @@ namespace TankGame
         public int ShootDamageForce { get; }
         public Health Health { get; }
         public Ability Ability { get; set; }
+        public int LifesCount { get; set; }
     }
 }

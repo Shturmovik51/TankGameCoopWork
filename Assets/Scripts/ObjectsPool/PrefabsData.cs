@@ -14,6 +14,7 @@ namespace TankGame
         [SerializeField] private GameObject _enemiesPanel;
         [SerializeField] private GameObject _playerPanel;
         [SerializeField] private GameObject _skillButton;
+        [SerializeField] private GameObject _endScreen;
         public GameObject DustTrail => _dustTrail;
         public GameObject ShellExplosion => _shellExplosion;
         public GameObject TankExplosion => _tankExplosion;
@@ -23,5 +24,6 @@ namespace TankGame
         public GameObject EnemiesPanel => _enemiesPanel;
         public GameObject PlayerPanel => _playerPanel;
         public GameObject SkillButton => _skillButton;
+        public GameObject EndScreen => _endScreen;
     }
 }

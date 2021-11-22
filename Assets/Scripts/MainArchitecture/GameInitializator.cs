@@ -11,13 +11,21 @@ namespace TankGame
             var inputController = new InputController(gameData);
             var poolController = new PoolController(gameData, effectsCount, gameManager);
             var damageModifier = new DamageModifier();
+            var roundController = Object.FindObjectOfType<RoundController>();
 
-            var playerModel = new PlayerModel(gameData.PlayerModelData);
+            var endscreen = Object.Instantiate(gameData.PrefabsData.EndScreen, canvas.transform);
+            endscreen.SetActive(false);
+
+            var endScreenController = endscreen.GetComponent<EndScreenController>();
+            endScreenController.SetRoundController(roundController);
+
+            var playerModel = new PlayerModel(gameData.PlayerModelData, roundController);
 
             var playerFactory = new PlayerFactory(playerModel);
             var playerInitialization = new PlayerInitialization(playerFactory, playerPosition);
             var playerView = playerInitialization.GetPlayer().GetComponent<PlayerView>();
-            var playerController = new PlayerController(playerModel, playerView, inputController, poolController, damageModifier);
+            var playerController = new PlayerController(playerModel, playerView, inputController, poolController, 
+                                            damageModifier, endScreenController);
             var enemyCount = gameData.EnemyModelsData.Length;
             var enemyModels = new EnemyModel[enemyCount];
 
@@ -25,7 +33,7 @@ namespace TankGame
 
             for (int i = 0; i < enemyCount; i++)
             {
-                enemyModels[i] = new EnemyModel(gameData.EnemyModelsData[i], abilitiesManager);
+                enemyModels[i] = new EnemyModel(gameData.EnemyModelsData[i], abilitiesManager, roundController);
             }   
 
             var enemyFactory = new EnemyFactory(enemyModels);
@@ -47,18 +55,22 @@ namespace TankGame
 
             playerView.InitStatsPanel(playerPanel);
 
-            var enemyController = new EnemyController(enemyModels, enemyViews, poolController, playerView, abilitiesManager, damageModifier);
-            var turnController = new TurnController(uIFields, enemyViews, playerView);
+            var enemyController = new EnemyController(enemyModels, enemyViews, poolController, playerView, abilitiesManager, 
+                                            damageModifier, endScreenController);
+            var turnController = new TurnController(uIFields, enemyViews, playerView, playerController, enemyController);
             var skillButtonActiveStateController = new SkillButtonActiveStateController(playerUIFactory, playerModel);
             var skillButtonCDStateController = new SkillButtonCDStateController(skillButtonActiveStateController, turnController, playerController);
             var targetController = new TargetController(enemyViews, enemyModels, turnController, gameData, inputController);
             var targetprovider = new TargetProvider(enemyModels, enemyViews);
 
-            playerController.TargetProvider = targetprovider;
-            playerController._enemies = enemyViews;
+            endscreen.transform.SetSiblingIndex(5); //todo подумать, как сделать нормальнов
+
+            playerController.TargetProvider = targetprovider;   // todo временный костыль
+            playerController._enemies = enemyViews;             //
 
             controllersManager.Add(inputController);
-            controllersManager.Add(poolController); 
+            controllersManager.Add(poolController);
+            controllersManager.Add(endScreenController);
             controllersManager.Add(playerController);
             controllersManager.Add(enemyController);
             controllersManager.Add(turnController);

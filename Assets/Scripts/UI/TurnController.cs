@@ -14,11 +14,16 @@ namespace TankGame
         private PlayerView _playerView;
         private bool _isEnemyTurn;
         private int _curentEnemyTurn;
-        public TurnController(UIFields uIFields, EnemyView[] enemyViews, PlayerView playerView)
+        private PlayerController _playerController;
+        private EnemyController _enemyController;
+        public TurnController(UIFields uIFields, EnemyView[] enemyViews, PlayerView playerView,
+                        PlayerController playerController, EnemyController enemyController)
         {
             _turnText = uIFields.TurnText;
             _enemyViews = enemyViews;
             _playerView = playerView;
+            _playerController = playerController;
+            _enemyController = enemyController;
         }
 
         public void Initialization()
@@ -27,8 +32,11 @@ namespace TankGame
             {
                 view.OnChangeTurn += SetEnemyTurn;
             }
-            
+
+            _enemyController.OnEndTurn += SetPlayerTurn;
+            _playerController.OnEndTurn += SetEnemyTurn;
             _playerView.OnChangeTurn += SetPlayerTurn;
+
             _turnText.text = "Player Turn";
         }
 
@@ -44,25 +52,22 @@ namespace TankGame
 
         private void SetPlayerTurn()
         {
-            if (_curentEnemyTurn == _enemyViews.Length)
-            {
-                _isEnemyTurn = false;
-                _turnText.text = "Player Turn";
-
-                OnSetPlayerTurn?.Invoke();
-            }
+            _playerController.SetPlayerTurn();
+            OnSetPlayerTurn?.Invoke();
         }
 
-        private void SetEnemyTurn(int iD)
+        private void SetEnemyTurn()
         {
-            if (!_isEnemyTurn)
-            {
-                OnSetEnemyTurn?.Invoke();
-            }
+            OnSetEnemyTurn?.Invoke();
+            _enemyController.RevengeTurn();
+        }
 
-            _curentEnemyTurn = iD + 1;
-            _isEnemyTurn = true;
-            _turnText.text = $"Enemy {_curentEnemyTurn} Turn";
+        private void UpdateTurnPanel<T>(T controller)
+        {
+            if(controller is PlayerController)
+                _turnText.text = "Player Turn";
+            if(controller is EnemyController)
+                _turnText.text = $"Enemy {_enemyController.CurentEnemy + 1} Turn";
         }
     }
 }
