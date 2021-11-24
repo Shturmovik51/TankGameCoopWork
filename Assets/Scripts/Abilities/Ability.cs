@@ -10,7 +10,7 @@ namespace TankGame
         [SerializeField] private int _cD;
         [SerializeField] private Sprite _elementIcon;
         [SerializeField] private Sprite _deathIcon;
-        private int _iD;
+        [SerializeField] private int _iD;
 
         public AbilityType Type => _type;
         public int CD => _cD;

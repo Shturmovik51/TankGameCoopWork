@@ -10,13 +10,24 @@ namespace TankGame
             if (Input.GetKey(_inputKeysData.Shoot)) action?.Invoke();
         }
 
-        public void GetKeyNexTarget(InputKeysData _inputKeysData, Action action)
+        public void GetKeyNexTargetDown(InputKeysData _inputKeysData, Action action)
         {
             if (Input.GetKeyDown(_inputKeysData.NextTarget)) action?.Invoke();
         }
-        public void GetKeyPreviousTarget(InputKeysData _inputKeysData, Action action)
+
+        public void GetKeyPreviousTargetDown(InputKeysData _inputKeysData, Action action)
         {
             if (Input.GetKeyDown(_inputKeysData.PreviousTarget)) action?.Invoke();
+        }
+
+        public void GetKeySaveDown(InputKeysData _inputKeysData, Action action)
+        {
+            if (Input.GetKeyDown(_inputKeysData.Save)) action?.Invoke();
+        }
+
+        public void GetKeyLoadDown(InputKeysData _inputKeysData, Action action)
+        {
+            if (Input.GetKeyDown(_inputKeysData.Load)) action?.Invoke();
         }
     }
 }

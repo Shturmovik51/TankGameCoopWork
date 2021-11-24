@@ -1,0 +1,1 @@
+{"PlayerSave":{"_shootDamageForce":200,"_currentHealth":100,"_maxHealth":100,"_lifesCount":3}}

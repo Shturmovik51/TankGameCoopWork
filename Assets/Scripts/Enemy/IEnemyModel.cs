@@ -8,5 +8,6 @@ namespace TankGame
         public Health Health { get; }
         public int ShootLaunchForce { get; }
         public int ShootDamageForce { get; }
+        public int AbilityID { get; set; }
     }
 }

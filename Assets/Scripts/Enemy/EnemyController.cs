@@ -77,7 +77,6 @@ namespace TankGame
 
             _isRevenge = true;
 
-
             //_enemyViews[_curentEnemy].OnChangeTurn?.Invoke();
         }
 
@@ -90,10 +89,12 @@ namespace TankGame
         private void EnemyShoot(int enemyID)
         { 
             var shell = _poolController.GetShell();
-            shell.GetComponent<Shell>().SetDamageValue(_enemyModels[enemyID].ShootDamageForce, _enemyModels[enemyID].Ability.Type);
-            _enemyViews[enemyID].Shoot(shell, _enemyModels[enemyID].ShootLaunchForce);
+            var shootDamageForce = _enemyModels[enemyID].ShootDamageForce;
+            var abilityType = _abilitiesManager.GetAbility(_enemyModels[enemyID].AbilityID).Type;
+            shell.GetComponent<Shell>().SetDamageValue(shootDamageForce, abilityType);
 
-            _enemyViews[_curentEnemy].StartCoroutine(TurnDelay());           
+            _enemyViews[enemyID].Shoot(shell, _enemyModels[enemyID].ShootLaunchForce);
+            _enemyViews[enemyID].StartCoroutine(TurnDelay());           //
         }
 
         private void TakeDamage(int value, IDamagable view, AbilityType ownerAbility)
@@ -102,7 +103,8 @@ namespace TankGame
             {
                 if((IDamagable)_enemyViews[i] == view)
                 {
-                    var modifier = _damageModifier.GetModifier(ownerAbility, _enemyModels[i].Ability.Type);
+                    var abilityType = _abilitiesManager.GetAbility(_enemyModels[i].AbilityID).Type;
+                    var modifier = _damageModifier.GetModifier(ownerAbility, abilityType);
                     _enemyModels[i].Health.TakeDamage(value * modifier);
 
                     if (_enemyModels[i].Health.HP == 0)
@@ -114,7 +116,7 @@ namespace TankGame
                     _enemyViews[i].UpdateHPBar(barValue);
                     _curentEnemy = 0;
 
-                   // CheckEnemyDeath(i);
+                    //CheckEnemyDeath(i);
                     //RevengeTurn();
 
                     //_enemyViews[_curentEnemy].OnChangeTurn?.Invoke(_curentEnemy);

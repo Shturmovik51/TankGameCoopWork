@@ -69,6 +69,5 @@ namespace TankGame
         //{
         //    return _AbilitySamples.Find(ability => ability.ID == id);
         //}
-
     }
 }

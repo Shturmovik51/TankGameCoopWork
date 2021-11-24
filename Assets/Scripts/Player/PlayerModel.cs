@@ -8,9 +8,7 @@ namespace TankGame
         public int ShootLaunchForce { get; }
         public int ShootDamageForce { get; }
         public Health Health { get; }
-        public Ability Ability { get; set; }
-        public AbilityType AbilityType { get; set; }
-        public bool IsAbilityActive { get; set; }
+        public int AbilityID { get; set; }
         public int LifesCount { get; set; }
         public PlayerModel(PlayerModelData playerModelData, RoundController roundController)
         {

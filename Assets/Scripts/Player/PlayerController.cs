@@ -8,20 +8,21 @@ namespace TankGame
     {
         public event Action OnShoot;
         public event Action OnEndTurn;
-        public TargetProvider TargetProvider;
-        public EnemyView[] _enemies;
 
+        private TargetProvider _targetProvider;
         private PlayerModel _playerModel;
         private PlayerView _playerView;
         private InputController _inputController;
         private PoolController _poolController;
-        private bool _isShootDelay;
-        //private int _takeDamageCount;
         private DamageModifier _damageModifier;
         private EndScreenController _endScreenController;
+        private AbilitiesManager _abilitiesManager;
+        private SkillButtonsManager _skillButtonsManager;
+        private bool _isShootDelay;
 
         public PlayerController(PlayerModel playerModel, PlayerView playerView, InputController inputController,
-                    PoolController poolController, DamageModifier damageModifier, EndScreenController endScreenController)
+                    PoolController poolController, DamageModifier damageModifier, EndScreenController endScreenController, 
+                        AbilitiesManager abilitiesManager, TargetProvider targetProvider, SkillButtonsManager skillButtonsManager)
         {
             _playerModel = playerModel;
             _playerView = playerView;
@@ -29,6 +30,9 @@ namespace TankGame
             _poolController = poolController;
             _damageModifier = damageModifier;
             _endScreenController = endScreenController;
+            _abilitiesManager = abilitiesManager;
+            _targetProvider = targetProvider;
+            _skillButtonsManager = skillButtonsManager;
         }
         public void Initialization()
         {
@@ -58,36 +62,29 @@ namespace TankGame
 
         private void RotateToTarget(float deltatime)
         {
-            _playerView.Rotate(TargetProvider.GetTarget(), deltatime);            
+            _playerView.Rotate(_targetProvider.GetTarget(), deltatime);            
         }
 
         private void PlayerShoot()
         {
             if (_isShootDelay) return;
-            if (!_playerModel.IsAbilityActive) return;
-
-            OnShoot?.Invoke();
 
             _isShootDelay = true;
 
-            _playerView.StartCoroutine(EndTurn());
-
             var shell = _poolController.GetShell();
-            shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce, _playerModel.AbilityType);
-            _playerView.Shoot(shell, _playerModel.ShootLaunchForce);            
+            var abilityID = _skillButtonsManager.GetActiveSkillButton().AbilityID;
+            var abilityType = _abilitiesManager.GetAbility(abilityID).Type;
+            shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce, abilityType);
+            _playerView.Shoot(shell, _playerModel.ShootLaunchForce);  
+            
+            _playerView.StartCoroutine(EndTurn());
+            OnShoot?.Invoke();
         }
 
         private void TakeDamage(int value, IDamagable iD, AbilityType ownerAbility)
-        {
-            //_takeDamageCount++;
-
-            //if (_takeDamageCount == _enemies.Length)    //todo переделать
-            //{
-            //    _isShootDelay = false;
-            //    _takeDamageCount = 0;
-            //}
-
-            var modifier = _damageModifier.GetModifier(ownerAbility, _playerModel.AbilityType);
+        {            
+            var abilityType = _abilitiesManager.GetAbility(_playerModel.AbilityID).Type;
+            var modifier = _damageModifier.GetModifier(ownerAbility, abilityType);
             _playerModel.Health.TakeDamage(value * modifier);
 
             if (_playerModel.Health.HP == 0)
@@ -98,8 +95,6 @@ namespace TankGame
             UpdateHealthBar();
 
             Debug.Log($"PlayerHealth {_playerModel.Health.HP}");
-
-            //_playerView.OnChangeTurn?.Invoke();
         }
 
         private void UpdateHealthBar()
@@ -118,7 +113,5 @@ namespace TankGame
             yield return new WaitForSeconds(1);
             OnEndTurn?.Invoke();
         }
-
-
     }
 }

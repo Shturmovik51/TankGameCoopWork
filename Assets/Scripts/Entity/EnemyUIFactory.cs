@@ -8,11 +8,13 @@ namespace TankGame
     {
         private GameObject _statsPanelPref;
         private Transform _parentTransform;
+        private AbilitiesManager _abilitiesManager;
 
-        public EnemyUIFactory(GameData gameData, GameObject enemiesPanel)
+        public EnemyUIFactory(GameData gameData, GameObject enemiesPanel, AbilitiesManager abilitiesManager)
         {
             _statsPanelPref = gameData.PrefabsData.EnemyUI;
             _parentTransform = enemiesPanel.transform;
+            _abilitiesManager = abilitiesManager;
         }
 
         public EnemyStatsPanel GetEnemyStatsPanel(EnemyModel enemyModel, int iD)
@@ -21,8 +23,8 @@ namespace TankGame
             var panel = new EnemyStatsPanel(panelObject);
 
             panel.UpdateTitle($"Enemy {iD+1}")
-                 .UpdateElement(enemyModel.Ability.ElementIcon)
-                 .SetDeathIcon(enemyModel.Ability.DeathIcon);
+                 .UpdateElement(_abilitiesManager.GetAbility(enemyModel.AbilityID).ElementIcon)
+                 .SetDeathIcon(_abilitiesManager.GetAbility(enemyModel.AbilityID).DeathIcon);
 
             return panel;
         }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace TankGame
 {
-    public class EnemyModel : IEnemyModel, IEntity
+    public class EnemyModel : IEnemyModel
     {
         public GameObject Tank { get; }
         public int ShootLaunchForce { get; }
@@ -10,7 +10,7 @@ namespace TankGame
         public int ShootDamageForce { get; }
         public bool IsTarget { get; set; }
         public bool IsDead { get; set; }
-        public Ability Ability { get; set; }
+        public int AbilityID { get; set; }
         public EnemyModel(EnemyModelData enemyModelData, AbilitiesManager abilitiesManager, RoundController roundController)
         {
             Tank = enemyModelData.TankPrefab;
@@ -22,7 +22,7 @@ namespace TankGame
             var health = enemyModelData.Health + (int)(enemyModelData.Health * roundController.DifficultIndex);
             Health = new Health(health);
 
-            Ability = abilitiesManager.GetRandomAbility();
+            AbilityID = abilitiesManager.GetRandomAbilityIndex();
 
             IsDead = false;
         }
