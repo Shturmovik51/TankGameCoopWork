@@ -10,13 +10,25 @@ namespace TankGame
         public Health Health { get; }
         public int AbilityID { get; set; }
         public int LifesCount { get; set; }
-        public PlayerModel(PlayerModelData playerModelData, RoundController roundController)
+        public PlayerModel(PlayerModelData playerModelData, StartGameParametersManager startGameParametersManager)
         {
             Tank = playerModelData.TankPrefab;
             ShootLaunchForce = playerModelData.ShootLaunchForce;
-            ShootDamageForce = playerModelData.ShootDamageForce;
-            Health = new Health(playerModelData.Health);
-            LifesCount = roundController.LifesCount;
+
+            if (startGameParametersManager.SavedData == null)
+            {                
+                ShootDamageForce = playerModelData.ShootDamageForce;
+                Health = new Health(playerModelData.Health, playerModelData.Health);
+                LifesCount = startGameParametersManager.LifesCount;
+            }
+            else
+            {
+                ShootDamageForce = startGameParametersManager.SavedData.PlayerSave.ShootDamageForce;
+                var currentHealth = startGameParametersManager.SavedData.PlayerSave.CurrentHealth;
+                var maxHealth = startGameParametersManager.SavedData.PlayerSave.MaxHealth;
+                Health = new Health(maxHealth, currentHealth);
+                LifesCount = startGameParametersManager.SavedData.PlayerSave.LifesCount;
+            }     
         }
     }
 }

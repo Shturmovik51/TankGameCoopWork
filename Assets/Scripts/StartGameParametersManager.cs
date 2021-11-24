@@ -2,17 +2,19 @@ using UnityEngine;
 
 namespace TankGame
 {
-    public class RoundController : MonoBehaviour
+    public class StartGameParametersManager : MonoBehaviour
     {
         [SerializeField] private int _lifesCount;
         [SerializeField] private float _difficultIndex;
+        private SavedData _savedData; 
 
         public int LifesCount => _lifesCount;
         public float DifficultIndex => _difficultIndex;
+        public SavedData SavedData => _savedData;
 
         private void Awake()
         {
-            RoundController[] objs = FindObjectsOfType<RoundController>();
+            StartGameParametersManager[] objs = FindObjectsOfType<StartGameParametersManager>();
 
             if (objs.Length > 1)
             {
@@ -36,6 +38,15 @@ namespace TankGame
         public void DecreaseLifeCount()
         {
             _lifesCount--;
+        }
+
+        public void InitsavedData(SavedData savedData)
+        {
+            _savedData = savedData;
+        }
+        public void ResetSavedData()
+        {
+            _savedData = null;
         }
     }
 }

@@ -20,25 +20,33 @@ namespace TankGame
         public void Initialization()
         {
             _turnController.OnSetPlayerTurn += UpdateButtonsOnCD;
-            _playerController.OnShoot += ShowButtonCDState;
+            _playerController.OnShoot += SetCDState;
+
+            SetCDState();
         }
 
         public void CleanUp()
         {
             _turnController.OnSetPlayerTurn -= UpdateButtonsOnCD;
-            _playerController.OnShoot -= ShowButtonCDState;
+            _playerController.OnShoot -= SetCDState;
         }
 
-        public void ShowButtonCDState()
+        public void SetCDState()
         {
             var button = _skillButtonsManager.GetActiveSkillButton();
-            if (button == null) return;
+            if (button != null)
+            {
+                button.IsActive = false;
+                button.IsOnCD = true;
+            }
 
-            button.IsActive = false;
-            button.IsOnCD = true;
-            button.CDText.gameObject.SetActive(true);  
-            button.Button.interactable = false;
-            button.CDText.text = button.CurrentCD.ToString();
+            var buttonsOnCD = _skillButtonsManager.GetSkillButtonsOnCD();
+            foreach (var buttonOnCD in buttonsOnCD)
+            {
+                buttonOnCD.CDText.gameObject.SetActive(true);
+                buttonOnCD.Button.interactable = false;
+                buttonOnCD.CDText.text = buttonOnCD.CurrentCD.ToString();
+            }
         }
 
         public void UpdateButtonsOnCD()

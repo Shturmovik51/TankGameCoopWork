@@ -12,15 +12,15 @@ namespace TankGame
             var inputController = new InputController(gameData);
             var poolController = new PoolController(gameData, effectsCount, gameManager);
             var damageModifier = new DamageModifier();
-            var roundController = Object.FindObjectOfType<RoundController>();
+            var startGameParametersManager = Object.FindObjectOfType<StartGameParametersManager>();
 
             var endscreen = Object.Instantiate(gameData.PrefabsData.EndScreen, canvas.transform);
             endscreen.SetActive(false);
 
             var endScreenController = endscreen.GetComponent<EndScreenController>();
-            endScreenController.SetRoundController(roundController);
+            endScreenController.SetRoundController(startGameParametersManager);
 
-            var playerModel = new PlayerModel(gameData.PlayerModelData, roundController);
+            var playerModel = new PlayerModel(gameData.PlayerModelData, startGameParametersManager);
 
             var playerFactory = new PlayerFactory(playerModel);
             var playerInitialization = new PlayerInitialization(playerFactory, playerPosition);
@@ -32,7 +32,7 @@ namespace TankGame
 
             for (int i = 0; i < enemyCount; i++)
             {
-                enemyModels[i] = new EnemyModel(gameData.EnemyModelsData[i], abilitiesManager, roundController);
+                enemyModels[i] = new EnemyModel(gameData.EnemyModelsData[i], abilitiesManager, startGameParametersManager, i);
             }   
 
             var enemyFactory = new EnemyFactory(enemyModels);
@@ -43,7 +43,7 @@ namespace TankGame
             var enemiesPanel = Object.Instantiate(gameData.PrefabsData.EnemiesPanel, canvas.transform); //todo в фабрику
             var playerPanel = Object.Instantiate(gameData.PrefabsData.PlayerPanel, canvas.transform);
 
-            var skillButtonsFactory = new SkillButtonsFactory(gameData, playerPanel, abilitiesManager);
+            var skillButtonsFactory = new SkillButtonsFactory(gameData, playerPanel, abilitiesManager, startGameParametersManager);
             var skillButtonsManager = new SkillButtonsManager(skillButtonsFactory);
 
             var enemyUIFactory = new EnemyUIFactory(gameData, enemiesPanel, abilitiesManager);
@@ -70,9 +70,10 @@ namespace TankGame
 
             endscreen.transform.SetSiblingIndex(5); //todo подумать, как сделать нормальнов
 
-            var saveDataRepository = new SaveDataRepository(inputController, playerModel);
+            var saveDataRepository = new SaveDataRepository(inputController, playerModel, enemyModels, skillButtonsManager, 
+                                            startGameParametersManager);
 
-
+            startGameParametersManager.ResetSavedData();
 
             controllersManager.Add(inputController);
             controllersManager.Add(poolController);

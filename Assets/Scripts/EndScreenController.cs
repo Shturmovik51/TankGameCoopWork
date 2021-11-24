@@ -19,7 +19,7 @@ namespace TankGame
         [SerializeField] private TextMeshProUGUI _winText;
         [SerializeField] private TextMeshProUGUI _loseText;
         [SerializeField] private TextMeshProUGUI _lifesCountText;
-        private RoundController _roundController;
+        private StartGameParametersManager _roundController;
 
         public void Initialization()
         {
@@ -35,7 +35,7 @@ namespace TankGame
             _continueButton.onClick.RemoveAllListeners();
         }
 
-        public void SetRoundController(RoundController roundController)
+        public void SetRoundController(StartGameParametersManager roundController)
         {
             _roundController = roundController;
         }

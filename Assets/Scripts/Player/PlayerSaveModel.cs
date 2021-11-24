@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TankGame
 {
     [System.Serializable]
-    public class PlayerModelForSave
+    public class PlayerSaveModel
     {
         [SerializeField] private int _shootDamageForce;
         [SerializeField] private int _currentHealth;
@@ -15,7 +13,7 @@ namespace TankGame
         public int CurrentHealth => _currentHealth;
         public int MaxHealth => _maxHealth;
         public int LifesCount => _lifesCount;
-        public PlayerModelForSave(int shootDamageForce, int currentHealth, int maxHealth, int lifesCount)
+        public PlayerSaveModel(int shootDamageForce, int currentHealth, int maxHealth, int lifesCount)
         {
             _shootDamageForce = shootDamageForce;
             _currentHealth = currentHealth;

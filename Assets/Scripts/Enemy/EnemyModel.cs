@@ -11,20 +11,35 @@ namespace TankGame
         public bool IsTarget { get; set; }
         public bool IsDead { get; set; }
         public int AbilityID { get; set; }
-        public EnemyModel(EnemyModelData enemyModelData, AbilitiesManager abilitiesManager, RoundController roundController)
+        public EnemyModel(EnemyModelData enemyModelData, AbilitiesManager abilitiesManager, 
+                    StartGameParametersManager startGameParametersManager, int index)
         {
             Tank = enemyModelData.TankPrefab;
             ShootLaunchForce = enemyModelData.ShootLaunchForce;
 
-            var shootDamageForse = enemyModelData.ShootDamageForce + (int)(enemyModelData.ShootDamageForce * roundController.DifficultIndex);
-            ShootDamageForce = shootDamageForse;
-                        
-            var health = enemyModelData.Health + (int)(enemyModelData.Health * roundController.DifficultIndex);
-            Health = new Health(health);
+            if (startGameParametersManager.SavedData == null)
+            {
+                var shootDamageForse = enemyModelData.ShootDamageForce + (int)(enemyModelData.ShootDamageForce * startGameParametersManager.DifficultIndex);
+                ShootDamageForce = shootDamageForse;
 
-            AbilityID = abilitiesManager.GetRandomAbilityIndex();
+                var health = enemyModelData.Health + (int)(enemyModelData.Health * startGameParametersManager.DifficultIndex);
+                Health = new Health(health, health);
 
-            IsDead = false;
+                AbilityID = abilitiesManager.GetRandomAbilityIndex();
+
+                IsDead = false;
+            }
+            else
+            {
+                ShootDamageForce = startGameParametersManager.SavedData.EnemiesSave[index].ShootDamageForce;
+                var maxHealth = startGameParametersManager.SavedData.EnemiesSave[index].MaxHealth;
+                var currentHealth = startGameParametersManager.SavedData.EnemiesSave[index].CurrentHealth;
+                Health = new Health(maxHealth, currentHealth);
+
+                AbilityID = startGameParametersManager.SavedData.EnemiesSave[index].AbilityID;
+
+                IsDead = startGameParametersManager.SavedData.EnemiesSave[index].IsDead; 
+            }
         }
     }
 }
