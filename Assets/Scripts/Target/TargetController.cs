@@ -19,7 +19,6 @@ namespace TankGame
             _turnPanelController = turnPanelController;
             _targetMarker = gameData.PrefabsData.TargetMarker;
             _inputController = inputController;
-
         }
 
         public void Initialization()
@@ -67,7 +66,7 @@ namespace TankGame
             if (_targetID > _enemyModels.Length - 1)
                 _targetID = 0;
 
-            if (_enemyModels[_targetID].IsDead)
+            if (_enemyModels[_targetID].IsDead || _enemyModels[_targetID].IsFlying)
             {
                 NextTarget();
                 return;
@@ -87,7 +86,7 @@ namespace TankGame
             if (_targetID < 0)
                 _targetID = _enemyModels.Length - 1;
 
-            if (_enemyModels[_targetID].IsDead)
+            if (_enemyModels[_targetID].IsDead || _enemyModels[_targetID].IsFlying)
             {
                 PreviousTarget();
                 return;
@@ -105,7 +104,7 @@ namespace TankGame
 
         private void SetTargetMarker()
         {
-            if (_enemyModels[_targetID].IsDead)
+            if (_enemyModels[_targetID].IsDead || _enemyModels[_targetID].IsFlying)
                 NextTarget();
 
             _targetMarker.transform.position = _enemyViews[_targetID].transform.position;

@@ -10,6 +10,7 @@ namespace TankGame
         public int ShootDamageForce { get; }
         public bool IsTarget { get; set; }
         public bool IsDead { get; set; }
+        public bool IsFlying { get; set; }
         public int AbilityID { get; set; }
         public EnemyModel(EnemyModelData enemyModelData, AbilitiesManager abilitiesManager, 
                     StartGameParametersManager startGameParametersManager, int index)
@@ -28,6 +29,7 @@ namespace TankGame
                 AbilityID = abilitiesManager.GetRandomAbilityIndex();
 
                 IsDead = false;
+                IsFlying = false;
             }
             else
             {

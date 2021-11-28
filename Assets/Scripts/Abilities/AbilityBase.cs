@@ -17,9 +17,9 @@ namespace TankGame
         {
             if (_AbilitySamples == null)
                 _AbilitySamples = new List<Ability>();
-            Ability buffSample = new Ability();
-            _AbilitySamples.Add(buffSample);
-            _currentAbility = buffSample;
+            Ability AbilitySample = new Ability();
+            _AbilitySamples.Add(AbilitySample);
+            _currentAbility = AbilitySample;
             _currentNumberInArray = _AbilitySamples.Count - 1;
         }
 
@@ -46,7 +46,7 @@ namespace TankGame
             }
         }
 
-        public void NextItem()
+        public void NextAbility()
         {
             if (_AbilitySamples.Count > _currentNumberInArray + 1)
             {
@@ -56,7 +56,7 @@ namespace TankGame
         }
 
 
-        public void PrevItem()
+        public void PrevAbility()
         {
             if (_currentNumberInArray > 0)
             {

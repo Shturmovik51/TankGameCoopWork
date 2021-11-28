@@ -15,12 +15,13 @@ namespace TankGame
         private bool _isRevenge;
         private Transform _targetPosition;
         private DamageModifier _damageModifier;
-        EndScreenController _endScreenController;
+        private EndScreenController _endScreenController;
+        private EnemiesStateController _enemiesStatesController;
         public int CurentEnemy => _curentEnemy;
 
         public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController, 
                         PlayerView playerView, AbilitiesManager abilitiesManager, DamageModifier damageModifier, 
-                                EndScreenController endScreenController)
+                                EndScreenController endScreenController, EnemiesStateController enemiesStatesController)
         {
             _enemyModels = enemyModels;
             _enemyViews = enemyViews;
@@ -29,18 +30,21 @@ namespace TankGame
             _abilitiesManager = abilitiesManager;
             _damageModifier = damageModifier;
             _endScreenController = endScreenController;
+            _enemiesStatesController = enemiesStatesController;
         }
 
         public void Initialization()
         {
             for (int i = 0; i < _enemyViews.Length; i++)
             {
-               // _enemyModels[i].Ability = _abilitiesManager.GetRandomAbility();
                 var barValue = (float)_enemyModels[i].Health.HP / _enemyModels[i].Health.MaxHP;
                 _enemyViews[i].UpdateHPBar(barValue);
                 _enemyViews[i].OnTakeDamage += TakeDamage;
                 _enemyViews[i].OnReadyToShoot += StartEnemyShootDelay;
             }
+
+            _enemiesStatesController.SetFlyingState(0, _enemyViews[0].transform, _enemyViews[0].TankRigidbody);
+            //_enemiesStatesController.SetFlyingState(1, _enemyViews[1].transform, _enemyViews[1].TankRigidbody);
         }
 
         public void CleanUp()
@@ -76,8 +80,6 @@ namespace TankGame
             CheckEnemyDeath(_curentEnemy);
 
             _isRevenge = true;
-
-            //_enemyViews[_curentEnemy].OnChangeTurn?.Invoke();
         }
 
         private void StartEnemyShootDelay()
@@ -110,16 +112,12 @@ namespace TankGame
                     if (_enemyModels[i].Health.HP == 0)
                     {
                         _enemyModels[i].IsDead = true;
+                        _enemyViews[i].Explosion();
                     }
 
                     var barValue = (float)_enemyModels[i].Health.HP / _enemyModels[i].Health.MaxHP;
                     _enemyViews[i].UpdateHPBar(barValue);
                     _curentEnemy = 0;
-
-                    //CheckEnemyDeath(i);
-                    //RevengeTurn();
-
-                    //_enemyViews[_curentEnemy].OnChangeTurn?.Invoke(_curentEnemy);
                 }
             }
         }        
@@ -144,17 +142,6 @@ namespace TankGame
                 if(!CheckAllDed())
                     OnEndTurn?.Invoke();
             }
-
-            //if (_curentEnemy > _enemyModels.Length - 1)
-            //{
-            //    _curentEnemy = 0;
-            //    _isRevenge = false;
-            //    OnEndTurn?.Invoke();
-            //}
-            //else
-            //{                
-            //    //_enemyViews[_curentEnemy].OnChangeTurn?.Invoke();
-            //}
         }
 
         private void CheckEnemyDeath(int iD)

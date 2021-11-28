@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TankGame
@@ -27,13 +28,14 @@ namespace TankGame
             var playerView = playerInitialization.GetPlayer().GetComponent<PlayerView>();
             
             var enemyCount = gameData.EnemyModelsData.Length;
-            var enemyModels = new EnemyModel[enemyCount];
-
+            var enemyModels = new EnemyModel[enemyCount];            
 
             for (int i = 0; i < enemyCount; i++)
             {
-                enemyModels[i] = new EnemyModel(gameData.EnemyModelsData[i], abilitiesManager, startGameParametersManager, i);
-            }   
+                enemyModels[i] = new EnemyModel(gameData.EnemyModelsData[i], abilitiesManager, startGameParametersManager, i);                
+            }
+
+            var enemiesStatesController = new EnemiesStateController(enemyCount, enemyModels);
 
             var enemyFactory = new EnemyFactory(enemyModels);
             var enemyInitialisation = new EnemyInitialization(enemyFactory, enemyPositions);
@@ -58,7 +60,7 @@ namespace TankGame
             playerView.InitStatsPanel(playerPanel);
 
             var enemyController = new EnemyController(enemyModels, enemyViews, poolController, playerView, abilitiesManager, 
-                                            damageModifier, endScreenController);
+                                            damageModifier, endScreenController, enemiesStatesController);
 
             var playerController = new PlayerController(playerModel, playerView, inputController, poolController, damageModifier, 
                                             endScreenController, abilitiesManager, targetprovider, skillButtonsManager);
@@ -85,6 +87,7 @@ namespace TankGame
             controllersManager.Add(skillButtonActiveStateController);
             controllersManager.Add(skillButtonCDStateController);
             controllersManager.Add(saveDataRepository);
+            controllersManager.Add(enemiesStatesController);
         }
     }
 }

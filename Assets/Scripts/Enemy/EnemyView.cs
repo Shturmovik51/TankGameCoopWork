@@ -1,11 +1,16 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace TankGame
 {
     public class EnemyView : MonoBehaviour, IDamagable
     {
+        [SerializeField] private Transform _shellStartPosition;
+        [SerializeField] private Transform _tankTower;
+        [SerializeField] private Rigidbody _tankRigidbody;
+        [SerializeField] private ParticleSystem _explosionBody;
+        [SerializeField] private ParticleSystem _explosionTover;
+
         public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
         public Action OnChangeTurn;
         public event Action OnReadyToShoot;
@@ -18,15 +23,13 @@ namespace TankGame
         private float _rotationTime = 1;
 
         private EnemyStatsPanel _tankStatsPanel;
-
         public bool IsOnRotation => _isOnRotation;
-
-        [SerializeField] private Transform _shellStartPosition;
+        public Rigidbody TankRigidbody => _tankRigidbody;
 
         public void Shoot(GameObject shell, int shootForce)
         {     
             shell.transform.position = _shellStartPosition.position;
-            shell.transform.rotation = transform.rotation;
+            shell.transform.rotation = _shellStartPosition.transform.rotation;
             shell.SetActive(true);
             var shellRigidBody = shell.GetComponent<Rigidbody>();
             shellRigidBody.velocity = Vector3.zero;
@@ -40,8 +43,8 @@ namespace TankGame
 
         public void SetStartRotationParameters(Transform target)
         {
-            _startDirection = transform.rotation;
-            _targetDirection = Quaternion.LookRotation(target.transform.position - transform.position);
+            _startDirection = _tankTower.transform.rotation;
+            _targetDirection = Quaternion.LookRotation(target.transform.position - _tankTower.transform.position);
             _isOnRotation = true;
         }
 
@@ -51,7 +54,7 @@ namespace TankGame
 
             _lerpProgress += deltaTime / _rotationTime;
             
-            transform.rotation = Quaternion.Lerp(_startDirection, _targetDirection, _lerpProgress);
+            _tankTower.transform.rotation = Quaternion.Lerp(_startDirection, _targetDirection, _lerpProgress);
 
             if (_lerpProgress > 1)
             {
@@ -65,5 +68,25 @@ namespace TankGame
         {
             _tankStatsPanel.UpdateHP(barValue);
         }
+
+        public void Explosion()
+        {
+            var explosionPosition = transform.position;
+            var explRadius = 3;
+
+            Collider[] colliders = Physics.OverlapSphere(explosionPosition, explRadius);
+
+            foreach (var hit in colliders)
+            {
+                Rigidbody hitRB = hit.GetComponent<Rigidbody>();
+                if (hitRB != null && hitRB != _tankRigidbody)
+                {
+                    hitRB.isKinematic = false;
+                    hitRB.AddExplosionForce(200, transform.position, explRadius, 3.0f, ForceMode.Impulse);
+                }
+            }
+            _explosionBody.gameObject.SetActive(true);
+            _explosionTover.gameObject.SetActive(true);
+        }       
     }
 }
