@@ -10,7 +10,7 @@ namespace TankGame
         public bool IsFlying { get; }
         public bool IsReadyToShoot { get; }
 
-        public void EnterState(Transform enemy, Rigidbody rigidbody);
+        public void EnterState(Transform enemy, Rigidbody rigidbody, BoxCollider tankCollider);
         public void Levitate();
         public void ExitState();
     }

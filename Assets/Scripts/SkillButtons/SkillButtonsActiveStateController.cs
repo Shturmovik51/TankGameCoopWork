@@ -6,6 +6,7 @@ namespace TankGame
 {
     public class SkillButtonsActiveStateController : IInitializable, ICleanable, IController
     {
+
         private List<SkillButton> _skillButtons;
         PlayerController _playerController;
 
@@ -17,7 +18,7 @@ namespace TankGame
 
         public void Initialization()
         {
-            _playerController.OnShoot += ResetButtonsState;
+            //_playerController.OnShoot += ResetButtonsState;
 
             foreach (var skillButton in _skillButtons)
             {
@@ -27,7 +28,7 @@ namespace TankGame
 
         public void CleanUp()
         {
-            _playerController.OnShoot -= ResetButtonsState;
+            //_playerController.OnShoot -= ResetButtonsState;
 
             foreach (var skillButton in _skillButtons)
             {
@@ -39,7 +40,7 @@ namespace TankGame
         {
             ResetButtonsState();
 
-            skillButton.IsActive = true;
+            skillButton.IsActive = true;                            //todo сделать стейтконтроллер кнопки
             skillButton.Button.image.color = Color.green;
         }
 
@@ -47,7 +48,7 @@ namespace TankGame
         {          
             foreach (var skillButton in _skillButtons)
             {                
-                //skillButton.IsActive = false;
+                skillButton.IsActive = false;
                 skillButton.Button.image.color = Color.white;
             }
         }       

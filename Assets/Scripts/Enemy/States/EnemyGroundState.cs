@@ -15,7 +15,7 @@ namespace TankGame
             IsReadyToShoot = true;
         }
 
-        public void EnterState(Transform enemy, Rigidbody rigidbody)
+        public void EnterState(Transform enemy, Rigidbody rigidbody, BoxCollider tankCollider)
         {
             
         }

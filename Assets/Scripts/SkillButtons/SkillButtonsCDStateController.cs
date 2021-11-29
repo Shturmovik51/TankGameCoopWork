@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TankGame
@@ -37,6 +35,7 @@ namespace TankGame
             if (button != null)
             {
                 button.IsActive = false;
+                button.Button.image.color = Color.white;
                 button.IsOnCD = true;
             }
 

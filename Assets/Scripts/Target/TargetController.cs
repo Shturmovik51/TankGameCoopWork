@@ -61,6 +61,16 @@ namespace TankGame
         {
             if (!_isOnSearchTarget) return;
 
+            var isAllDead = true;
+
+            foreach (var enemy in _enemyModels)
+            {
+                if (!enemy.IsDead)
+                    isAllDead = false;
+            }
+
+            if (isAllDead) return;
+
             if (_enemyModels[_targetID].IsDead || _enemyModels[_targetID].IsFlying)
             {
                 NextTarget();

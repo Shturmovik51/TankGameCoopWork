@@ -10,6 +10,7 @@ namespace TankGame
 
         private Transform _enemy;
         private Rigidbody _rigidbody;
+        private BoxCollider _tankCollider;
         private float _flyingForce = 1000;
         private float _stabilizingForce = 200;
         private bool _isFirstUp;
@@ -21,16 +22,18 @@ namespace TankGame
             IsReadyToShoot = false;
         }
 
-        public void EnterState(Transform enemy, Rigidbody rigidbody)
+        public void EnterState(Transform enemy, Rigidbody rigidbody, BoxCollider tankCollider)
         {
             _enemy = enemy;
             _rigidbody = rigidbody;
             _isFirstUp = true;
+            _tankCollider = tankCollider;
+            _tankCollider.enabled = false;
         }
 
         public void ExitState()
         {
-            
+            _tankCollider.enabled = true;
         }
 
         public void Levitate()

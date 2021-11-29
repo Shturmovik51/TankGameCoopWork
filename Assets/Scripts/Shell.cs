@@ -8,10 +8,11 @@ namespace TankGame
         [SerializeField] private Rigidbody _shellRigidbody;
         [SerializeField] private GameObject _shell;
         [SerializeField] private CapsuleCollider _shellCollider;
+        [SerializeField] private Light _shellLight;
 
         private int _damageValue;
         private AbilityType _ownerAbility;
-        private const float EXPLOSION_RADIUS = 20;
+        private const float EXPLOSION_RADIUS = 5;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -25,7 +26,18 @@ namespace TankGame
         {
             _damageValue = value;
             _ownerAbility = ownerAbility;
+        }               
+
+        public void SetIdleState()
+        {
+            _shell.SetActive(true);
+            _shellRigidbody.velocity = Vector3.zero;
+            _shellRigidbody.isKinematic = false;
+            _shellCollider.enabled = true;
+            //_shellTraser.Play();
+            _shellLight.enabled = true;
         }
+
 
         private void InflictDamage(IDamagable damagableObject, Transform objectTransform)
         {  
@@ -37,24 +49,26 @@ namespace TankGame
                 {
                     if (hits[j].gameObject.TryGetComponent(out IDamagable currentObject))
                     {
-                        currentObject.OnTakeDamage?.Invoke(_damageValue, currentObject, _ownerAbility);
-                        _shell.SetActive(false);
-                        _shellRigidbody.velocity = Vector3.zero;
-                        _shellRigidbody.isKinematic = true;
-                        _shellCollider.enabled = false;
-                        _shellTraser.Stop();
+                        SetHitState(currentObject);
                     }
                 }
             }
             else
             {
-                damagableObject.OnTakeDamage?.Invoke(_damageValue, damagableObject, _ownerAbility);
-                _shell.SetActive(false);
-                _shellRigidbody.velocity = Vector3.zero;
-                _shellRigidbody.isKinematic = true;
-                _shellCollider.enabled = false;
-                _shellTraser.Stop();
+                SetHitState(damagableObject);
             }   
+        }
+
+        private void SetHitState(IDamagable target)
+        {
+            target.OnTakeDamage?.Invoke(_damageValue, target, _ownerAbility);
+
+            _shell.SetActive(false);
+            _shellRigidbody.velocity = Vector3.zero;
+            _shellRigidbody.isKinematic = true;
+            _shellCollider.enabled = false;
+            _shellTraser.Stop();
+            _shellLight.enabled = false;
         }
     }
 }

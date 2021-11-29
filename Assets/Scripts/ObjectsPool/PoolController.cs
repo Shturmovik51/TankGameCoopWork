@@ -71,24 +71,26 @@ namespace TankGame
 
         public GameObject GetShell()
         {
-            return GetObject(_shells);
+            var shell = GetObject(_shells);
+            shell.GetComponent<Shell>().SetIdleState();
+            return shell;
         }
 
         private GameObject GetObject(List<GameObject> effectPool)
         {
             var effect = effectPool[0];
             effectPool.Remove(effect);
-            _gameManager.StartCoroutine(EffectTimer(effect, effectPool));
+            _gameManager.StartCoroutine(ObjectLiveTimer(effect, effectPool));
             return effect;      
         }
 
-        private IEnumerator EffectTimer(GameObject effect, List<GameObject> effectPool)
+        private IEnumerator ObjectLiveTimer(GameObject effect, List<GameObject> effectPool)
         {
             yield return new WaitForSeconds(10);
-            ReturnHitEffectToPool(effect, effectPool);
+            ReturnObjectToPoll(effect, effectPool);
         }
 
-        private void ReturnHitEffectToPool(GameObject effect, List<GameObject> effectPool)
+        private void ReturnObjectToPoll(GameObject effect, List<GameObject> effectPool)
         {
             effect.SetActive(false);
             effectPool.Add(effect);

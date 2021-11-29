@@ -64,6 +64,8 @@ namespace TankGame
 
         public void StartEnemyTurn()
         {
+            CheckAllDead();
+
             _readyEnemiesCount = 0;
 
             bool isOnFlyingState = false;
@@ -82,9 +84,8 @@ namespace TankGame
                 RevengeTurn();
         }
 
-        public void RevengeTurn()
-        {
-
+        private void RevengeTurn()
+        {  
             foreach (var view in _enemyViews)
             {
                 view.SetStartRotationParameters(_targetPosition);
@@ -102,6 +103,20 @@ namespace TankGame
             _isRevenge = true;
         }
 
+        private void CheckAllDead()
+        {
+            var isAllDead = true;
+
+            foreach (var model in _enemyModels)
+            {
+                if (!model.IsDead)
+                    isAllDead = false;
+            }
+
+            if (isAllDead)
+                _endScreenController.StartWinScreen();
+        }
+
         private void SetEnemiesFlyingState()
         {
             foreach (var model in _enemyModels)
@@ -115,9 +130,10 @@ namespace TankGame
             for (int i = 0; i < _readyEnemiesCount - 1; i++)
             {
                 var index = UnityEngine.Random.Range(0, _enemyModels.Length - 1);
+                var enemy = _enemyViews[index];
 
-                if(!_enemyModels[index].IsDead && !_enemyModels[index].IsFlying)
-                    _enemiesStatesController.SetFlyingState(index, _enemyViews[index].transform, _enemyViews[index].TankRigidbody);
+                if (!_enemyModels[index].IsDead && !_enemyModels[index].IsFlying)
+                    _enemiesStatesController.SetFlyingState(index, enemy.transform, enemy.TankRigidbody, enemy.TankCollider);
             }
         }
 
@@ -198,7 +214,5 @@ namespace TankGame
             yield return new WaitForSeconds(1);
             RevengeTurn();
         }
-
-
     }
 }

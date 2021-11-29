@@ -10,6 +10,7 @@ namespace TankGame
         [SerializeField] private Rigidbody _tankRigidbody;
         [SerializeField] private ParticleSystem _explosionBody;
         [SerializeField] private ParticleSystem _explosionTover;
+        [SerializeField] private BoxCollider _tankCollider;
 
         public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
         public Action OnChangeTurn;
@@ -21,10 +22,11 @@ namespace TankGame
         private bool _isOnRotation;
         private float _lerpProgress;
         private float _rotationTime = 1;
-
         private EnemyStatsPanel _tankStatsPanel;
+
         public bool IsOnRotation => _isOnRotation;
         public Rigidbody TankRigidbody => _tankRigidbody;
+        public BoxCollider TankCollider => _tankCollider;
 
         public void Shoot(GameObject shell, int shootForce)
         {     

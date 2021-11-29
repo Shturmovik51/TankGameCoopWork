@@ -35,7 +35,7 @@ namespace TankGame
             }
         }
 
-        public void SetFlyingState(int iD, Transform transform, Rigidbody rigidbody)
+        public void SetFlyingState(int iD, Transform transform, Rigidbody rigidbody, BoxCollider collider)  //todo передать тупо вьюху
         {
             _enemiesFlyingState[iD].ExitState();
 
@@ -43,7 +43,7 @@ namespace TankGame
 
             _enemyModels[iD].IsFlying = _enemiesStates[iD].EnemyFlyingState.IsFlying;
 
-            _enemiesFlyingState[iD].EnterState(transform, rigidbody);
+            _enemiesFlyingState[iD].EnterState(transform, rigidbody, collider);
         }
 
         public void SetGroundState(int iD)

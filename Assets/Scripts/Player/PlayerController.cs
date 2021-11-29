@@ -75,8 +75,7 @@ namespace TankGame
             var abilityID = _skillButtonsManager.GetActiveSkillButton().AbilityID;
             var abilityType = _abilitiesManager.GetAbility(abilityID).Type;
             shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce, abilityType);
-            _playerView.Shoot(shell, _playerModel.ShootLaunchForce);  
-            
+            _playerView.Shoot(shell, _playerModel.ShootLaunchForce);              
             _playerView.StartCoroutine(EndTurn());
             OnShoot?.Invoke();
         }
