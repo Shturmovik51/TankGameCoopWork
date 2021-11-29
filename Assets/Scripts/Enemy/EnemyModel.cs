@@ -11,6 +11,7 @@ namespace TankGame
         public bool IsTarget { get; set; }
         public bool IsDead { get; set; }
         public bool IsFlying { get; set; }
+        public bool IsReadyForTurn { get; set; }
         public int AbilityID { get; set; }
         public EnemyModel(EnemyModelData enemyModelData, AbilitiesManager abilitiesManager, 
                     StartGameParametersManager startGameParametersManager, int index)
@@ -30,6 +31,7 @@ namespace TankGame
 
                 IsDead = false;
                 IsFlying = false;
+                IsReadyForTurn = false;
             }
             else
             {

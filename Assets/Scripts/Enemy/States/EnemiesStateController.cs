@@ -37,13 +37,22 @@ namespace TankGame
 
         public void SetFlyingState(int iD, Transform transform, Rigidbody rigidbody)
         {
+            _enemiesFlyingState[iD].ExitState();
+
             _enemiesFlyingState[iD] = _enemiesStates[iD].EnemyFlyingState;
 
             _enemyModels[iD].IsFlying = _enemiesStates[iD].EnemyFlyingState.IsFlying;
-            _enemyModels[iD].IsDead = !_enemiesStates[iD].EnemyFlyingState.IsAlive;
-
 
             _enemiesFlyingState[iD].EnterState(transform, rigidbody);
+        }
+
+        public void SetGroundState(int iD)
+        {
+            _enemiesFlyingState[iD].ExitState();
+
+            _enemiesFlyingState[iD] = _enemiesStates[iD].EnemyGroundState;
+
+            _enemyModels[iD].IsFlying = _enemiesStates[iD].EnemyGroundState.IsFlying;
         }
     }
 }

@@ -32,8 +32,8 @@ namespace TankGame
             _targetMarker = Object.Instantiate(_targetMarker);
             _targetMarker.SetActive(false);
 
-            ChangeTargetStatus(_targetID);
-            SetTargetMarker();
+            //ChangeTargetStatus(_targetID);
+            //SetTargetMarker();
         }
 
         public void CleanUp()
@@ -47,7 +47,8 @@ namespace TankGame
         private void StartSearchTarget()
         {            
             _isOnSearchTarget = true;
-            SetTargetMarker();
+            ResetTargetStatus();
+            CurrentTarget();
         }
 
         private void StopSearchTarget()
@@ -56,11 +57,26 @@ namespace TankGame
             _targetMarker.SetActive(false);
         }
 
+        private void CurrentTarget()
+        {
+            if (!_isOnSearchTarget) return;
+
+            if (_enemyModels[_targetID].IsDead || _enemyModels[_targetID].IsFlying)
+            {
+                NextTarget();
+                return;
+            }
+
+            if (!_enemyModels[_targetID].IsTarget)
+                ChangeTargetStatus(_targetID);
+            SetTargetMarker();
+        }
+
         private void NextTarget()
         {
             if (!_isOnSearchTarget) return;
 
-            ChangeTargetStatus(_targetID);
+            ResetTargetStatus();
             _targetID++;
 
             if (_targetID > _enemyModels.Length - 1)
@@ -72,7 +88,8 @@ namespace TankGame
                 return;
             }
 
-            ChangeTargetStatus(_targetID);
+            if (!_enemyModels[_targetID].IsTarget)
+                ChangeTargetStatus(_targetID);
             SetTargetMarker();
         }
 
@@ -80,7 +97,7 @@ namespace TankGame
         {
             if (!_isOnSearchTarget) return;
 
-            ChangeTargetStatus(_targetID);
+            ResetTargetStatus();
             _targetID--;
 
             if (_targetID < 0)
@@ -92,14 +109,22 @@ namespace TankGame
                 return;
             }
 
-            ChangeTargetStatus(_targetID);
-
+            if (!_enemyModels[_targetID].IsTarget)
+                ChangeTargetStatus(_targetID);
             SetTargetMarker();
         }
 
         private void ChangeTargetStatus(int iD)
         {   
             _enemyModels[iD].IsTarget = !_enemyModels[iD].IsTarget;
+        }
+
+        private void ResetTargetStatus()
+        {
+            foreach (var enemy in _enemyModels)
+            {
+                enemy.IsTarget = false;
+            }
         }
 
         private void SetTargetMarker()

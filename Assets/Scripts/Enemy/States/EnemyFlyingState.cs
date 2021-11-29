@@ -10,6 +10,8 @@ namespace TankGame
 
         private Transform _enemy;
         private Rigidbody _rigidbody;
+        private float _flyingForce = 1000;
+        private float _stabilizingForce = 200;
         private bool _isFirstUp;
 
         public EnemyFlyingState()
@@ -28,23 +30,22 @@ namespace TankGame
 
         public void ExitState()
         {
-
+            
         }
 
         public void Levitate()
         {
             if (_enemy.transform.position.y < 2)
             {
-                _rigidbody.AddForce(Vector3.up * 1000, ForceMode.Force);
+                _rigidbody.AddForce(Vector3.up * _flyingForce, ForceMode.Force);
 
                 if (_isFirstUp) return;
 
-                _rigidbody.AddForce(Vector3.up * 1000, ForceMode.Force);
-
+                _rigidbody.AddForce(Vector3.up * _flyingForce, ForceMode.Force);
             }
             else
             {
-                _rigidbody.AddForce(Vector3.down * 200, ForceMode.Force);
+                _rigidbody.AddForce(Vector3.down * _stabilizingForce, ForceMode.Force);
                 _isFirstUp = false;
             }
         }

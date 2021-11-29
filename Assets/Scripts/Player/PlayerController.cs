@@ -55,7 +55,7 @@ namespace TankGame
             RotateToTarget(deltaTime);
         }  
         
-        public void SetPlayerTurn()
+        public void StartPlayerTurn()
         {
             _isShootDelay = false;
         }

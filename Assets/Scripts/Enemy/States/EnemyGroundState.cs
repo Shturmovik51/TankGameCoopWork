@@ -17,7 +17,7 @@ namespace TankGame
 
         public void EnterState(Transform enemy, Rigidbody rigidbody)
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public void Levitate()
@@ -27,7 +27,7 @@ namespace TankGame
 
         public void ExitState()
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }

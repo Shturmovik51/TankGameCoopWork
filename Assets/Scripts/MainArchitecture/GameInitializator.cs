@@ -82,8 +82,8 @@ namespace TankGame
             controllersManager.Add(endScreenController);
             controllersManager.Add(playerController);
             controllersManager.Add(enemyController);
-            controllersManager.Add(turnController);
             controllersManager.Add(targetController);
+            controllersManager.Add(turnController);
             controllersManager.Add(skillButtonActiveStateController);
             controllersManager.Add(skillButtonCDStateController);
             controllersManager.Add(saveDataRepository);

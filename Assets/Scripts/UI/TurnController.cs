@@ -37,7 +37,8 @@ namespace TankGame
             _playerController.OnEndTurn += SetEnemyTurn;
             _playerView.OnChangeTurn += SetPlayerTurn;
 
-            _turnText.text = "Player Turn";
+            // _turnText.text = "Player Turn";
+            SetPlayerTurn();
         }
 
         public void CleanUp()
@@ -53,13 +54,13 @@ namespace TankGame
         private void SetPlayerTurn()
         {
             OnSetPlayerTurn?.Invoke();
-            _playerController.SetPlayerTurn();
+            _playerController.StartPlayerTurn();
         }
 
         private void SetEnemyTurn()
         {
             OnSetEnemyTurn?.Invoke();
-            _enemyController.RevengeTurn();
+            _enemyController.StartEnemyTurn();
         }
 
         private void UpdateTurnPanel<T>(T controller)
