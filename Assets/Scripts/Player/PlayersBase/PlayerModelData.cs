@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace TankGame
 {
-    [CreateAssetMenu(menuName = "DataBase/PlayerModelData", fileName = nameof(PlayerModelData))]
-    public class PlayerModelData : ScriptableObject
+    [System.Serializable]
+    public class PlayerModelData
     {
         [SerializeField] private GameObject _tankPrefab;
         [SerializeField] private int _shootLaunchForce;

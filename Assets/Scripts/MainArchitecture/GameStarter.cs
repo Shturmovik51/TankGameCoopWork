@@ -2,13 +2,12 @@ using UnityEngine;
 
 namespace TankGame
 {
-    public class GameManager : MonoBehaviour
+    public class GameStarter : MonoBehaviour
     {
         [SerializeField] private int _effectsCount;
-        [SerializeField] private Transform _playerStartPos;
-        [SerializeField] private Transform[] _enemyStartPositions;
+        [SerializeField] private Transform[] _playersStartPos;
+        [SerializeField] private Transform[] _enemiesStartPos;
         [SerializeField] private UIFields _uIFields;
-        //[SerializeField] private Transform EnemyStatsPanelsParent;
         [SerializeField] private Canvas _canvas;
 
         private ControllersManager _controllersManager;
@@ -20,8 +19,8 @@ namespace TankGame
             _controllersManager = new ControllersManager();
             _gameData = (GameData) Resources.Load("GameData");
 
-            new GameInitializator(_controllersManager, _gameData, _effectsCount, this, _playerStartPos, 
-                                    _enemyStartPositions, _uIFields, _canvas);
+            new GameInitializator(_controllersManager, _gameData, _effectsCount, this, _playersStartPos, 
+                                    _enemiesStartPos, _uIFields, _canvas);
 
             _controllersManager.Initialization();
         }

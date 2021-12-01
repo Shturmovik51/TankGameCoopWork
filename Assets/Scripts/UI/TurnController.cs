@@ -11,17 +11,17 @@ namespace TankGame
 
         private TextMeshProUGUI _turnText;
         private EnemyView[] _enemyViews;
-        private PlayerView _playerView;
+        //private PlayerView _playerView;
         private bool _isEnemyTurn;
         private int _curentEnemyTurn;
         private PlayerController _playerController;
         private EnemyController _enemyController;
-        public TurnController(UIFields uIFields, EnemyView[] enemyViews, PlayerView playerView,
+        public TurnController(UIFields uIFields, EnemyView[] enemyViews, /*PlayerView playerView,*/
                         PlayerController playerController, EnemyController enemyController)
         {
             _turnText = uIFields.TurnText;
             _enemyViews = enemyViews;
-            _playerView = playerView;
+            //_playerView = playerView;
             _playerController = playerController;
             _enemyController = enemyController;
         }
@@ -35,7 +35,7 @@ namespace TankGame
 
             _enemyController.OnEndTurn += SetPlayerTurn;
             _playerController.OnEndTurn += SetEnemyTurn;
-            _playerView.OnChangeTurn += SetPlayerTurn;
+            //_playerView.OnChangeTurn += SetPlayerTurn;
 
             // _turnText.text = "Player Turn";
             SetPlayerTurn();
@@ -48,7 +48,7 @@ namespace TankGame
                 view.OnChangeTurn -= SetEnemyTurn;
             }
 
-            _playerView.OnChangeTurn -= SetPlayerTurn;
+           // _playerView.OnChangeTurn -= SetPlayerTurn;
         }
 
         private void SetPlayerTurn()

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace TankGame
 {
-    public class EnemyStatsPanel
+    public class EntiTyStatsPanel
     {
         private GameObject _statsPanel;
         private TextMeshProUGUI _titleText;
@@ -12,7 +12,9 @@ namespace TankGame
         private Image _healthBar;
         private Sprite _deathIcon;
 
-        public EnemyStatsPanel(GameObject statsPanel)
+        public GameObject StatsPanel => _statsPanel;
+
+        public EntiTyStatsPanel(GameObject statsPanel)
         {
             _statsPanel = statsPanel;
             _titleText = _statsPanel.GetComponentInChildren<TextMeshProUGUI>();
@@ -28,13 +30,13 @@ namespace TankGame
             }
         }
 
-        public EnemyStatsPanel UpdateTitle(string text)
+        public EntiTyStatsPanel UpdateTitle(string text)
         {
             _titleText.text = text;
             return this;
         }
 
-        public EnemyStatsPanel UpdateHP(float value)
+        public EntiTyStatsPanel UpdateHP(float value)
         {
             _healthBar.fillAmount = value;
 
@@ -44,7 +46,7 @@ namespace TankGame
             return this;
         }
 
-        public EnemyStatsPanel UpdateElement(Sprite image)
+        public EntiTyStatsPanel UpdateElement(Sprite image)
         {
             _elementIcon.sprite = image;
             return this;

@@ -14,20 +14,26 @@ namespace TankGame
         private int _curentEnemy;
         private int _readyEnemiesCount;
         private bool _isRevenge;
-        private Transform _targetPosition;
+        private Transform[] _targetPositions;
         private DamageModifier _damageModifier;
         private EndScreenController _endScreenController;
         private EnemiesStateController _enemiesStatesController;
         public int CurentEnemy => _curentEnemy;
 
         public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController, 
-                        PlayerView playerView, AbilitiesManager abilitiesManager, DamageModifier damageModifier, 
+                        PlayerView[] playersViews, AbilitiesManager abilitiesManager, DamageModifier damageModifier, 
                                 EndScreenController endScreenController, EnemiesStateController enemiesStatesController)
         {
             _enemyModels = enemyModels;
             _enemyViews = enemyViews;
             _poolController = poolController;
-            _targetPosition = playerView.transform;
+
+            _targetPositions = new Transform[playersViews.Length];
+            for (int i = 0; i < playersViews.Length; i++)
+            {
+                _targetPositions[i] = playersViews[i].gameObject.transform;
+            }
+
             _abilitiesManager = abilitiesManager;
             _damageModifier = damageModifier;
             _endScreenController = endScreenController;
@@ -88,7 +94,7 @@ namespace TankGame
         {  
             foreach (var view in _enemyViews)
             {
-                view.SetStartRotationParameters(_targetPosition);
+                view.SetStartRotationParameters(_targetPositions[0]);
             }
 
             foreach (var model in _enemyModels)
@@ -169,7 +175,7 @@ namespace TankGame
             {
                 if((IDamagable)_enemyViews[i] == view)
                 {
-                    var abilityType = _abilitiesManager.GetAbility(_enemyModels[i].AbilityID).Type;
+                    var abilityType = _abilitiesManager.GetAbility(_enemyViews[i].gameObject).Type;
                     var modifier = _damageModifier.GetModifier(ownerAbility, abilityType);
                     _enemyModels[i].Health.TakeDamage(value * modifier);
 
@@ -201,7 +207,7 @@ namespace TankGame
         { 
             var shell = _poolController.GetShell();
             var shootDamageForce = _enemyModels[enemyID].ShootDamageForce;
-            var abilityType = _abilitiesManager.GetAbility(_enemyModels[enemyID].AbilityID).Type;
+            var abilityType = _abilitiesManager.GetAbility(_enemyViews[enemyID].gameObject).Type;
             shell.GetComponent<Shell>().SetDamageValue(shootDamageForce, abilityType);
 
             _enemyViews[enemyID].Shoot(shell, _enemyModels[enemyID].ShootLaunchForce);

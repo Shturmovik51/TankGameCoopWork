@@ -27,7 +27,7 @@ namespace TankGame
                 var health = enemyModelData.Health + (int)(enemyModelData.Health * startGameParametersManager.DifficultIndex);
                 Health = new Health(health, health);
 
-                AbilityID = abilitiesManager.GetRandomAbilityIndex();
+                //AbilityID = abilitiesManager.GetRandomAbilityIndex();
 
                 IsDead = false;
                 IsFlying = false;

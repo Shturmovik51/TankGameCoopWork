@@ -14,16 +14,12 @@ namespace TankGame
         public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
         public Action OnChangeTurn;
         private int _rotationSpeed = 2;
-        private Image _healthBar;
+        // private Image _healthBar;
+        private EntiTyStatsPanel _playerStatsPanel;
 
-        public void InitStatsPanel(GameObject playerPanel)
+        public void InitStatsPanel(EntiTyStatsPanel playerStatsPanel)
         {
-            var images = playerPanel.GetComponentsInChildren<Image>();
-            for (int i = 0; i < images.Length; i++)
-            {
-                if (images[i].type == Image.Type.Filled)
-                    _healthBar = images[i];
-            }
+            _playerStatsPanel = playerStatsPanel;
         }
 
         public void Shoot(GameObject shell, int shootForce)
@@ -45,7 +41,12 @@ namespace TankGame
 
         public void UpdateHealthBar(float barValue)
         {
-            _healthBar.fillAmount = barValue;
+            _playerStatsPanel.UpdateHP(barValue);
+        }
+
+        public void UpdateElement(Sprite elementImage)
+        {
+            _playerStatsPanel.UpdateElement(elementImage);
         }
     }
 }

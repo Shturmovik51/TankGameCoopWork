@@ -10,8 +10,8 @@ namespace TankGame
         public event Action OnEndTurn;
 
         private TargetProvider _targetProvider;
-        private PlayerModel _playerModel;
-        private PlayerView _playerView;
+        private PlayerModel[] _playersModels;
+        private PlayerView[] _playersViews;
         private InputController _inputController;
         private PoolController _poolController;
         private DamageModifier _damageModifier;
@@ -19,13 +19,14 @@ namespace TankGame
         private AbilitiesManager _abilitiesManager;
         private SkillButtonsManager _skillButtonsManager;
         private bool _isShootDelay;
+        private int _activePlayer;
 
-        public PlayerController(PlayerModel playerModel, PlayerView playerView, InputController inputController,
+        public PlayerController(PlayerModel[] playersModels, PlayerView[] playersViews, InputController inputController,
                     PoolController poolController, DamageModifier damageModifier, EndScreenController endScreenController, 
                         AbilitiesManager abilitiesManager, TargetProvider targetProvider, SkillButtonsManager skillButtonsManager)
         {
-            _playerModel = playerModel;
-            _playerView = playerView;
+            _playersModels = playersModels;
+            _playersViews = playersViews;
             _inputController = inputController;
             _poolController = poolController;
             _damageModifier = damageModifier;
@@ -39,14 +40,23 @@ namespace TankGame
             UpdateHealthBar();
 
             _inputController.OnClickShootButton += PlayerShoot;
-            _playerView.OnTakeDamage += TakeDamage;
+
+            for (int i = 0; i < _playersViews.Length; i++)
+            {
+                _playersViews[i].OnTakeDamage += TakeDamage;
+            }
             _endScreenController.OnTakeLife += UpdatePlayerLifes;
         }
 
         public void CleanUp()
         {
             _inputController.OnClickShootButton -= PlayerShoot;
-            _playerView.OnTakeDamage -= TakeDamage;
+
+            for (int i = 0; i < _playersViews.Length; i++)
+            {
+                _playersViews[i].OnTakeDamage -= TakeDamage;
+            }
+
             _endScreenController.OnTakeLife -= UpdatePlayerLifes;
         }
 
@@ -62,7 +72,7 @@ namespace TankGame
 
         private void RotateToTarget(float deltatime)
         {
-            _playerView.Rotate(_targetProvider.GetTarget(), deltatime);            
+            _playersViews[_activePlayer].Rotate(_targetProvider.GetTarget(), deltatime);            
         }
 
         private void PlayerShoot()
@@ -72,39 +82,43 @@ namespace TankGame
             _isShootDelay = true;
 
             var shell = _poolController.GetShell();
-            var abilityID = _skillButtonsManager.GetActiveSkillButton().AbilityID;
-            var abilityType = _abilitiesManager.GetAbility(abilityID).Type;
-            shell.GetComponent<Shell>().SetDamageValue(_playerModel.ShootDamageForce, abilityType);
-            _playerView.Shoot(shell, _playerModel.ShootLaunchForce);              
-            _playerView.StartCoroutine(EndTurn());
+            var activeButton = _skillButtonsManager.GetActiveSkillButton();
+            var ability = _abilitiesManager.GetAbility(activeButton.Button.gameObject);
+            _playersModels[_activePlayer].CurrentAbility = ability;
+            shell.GetComponent<Shell>().SetDamageValue(_playersModels[_activePlayer].ShootDamageForce, ability.Type);
+            _playersViews[_activePlayer].Shoot(shell, _playersModels[_activePlayer].ShootLaunchForce);              
+            _playersViews[_activePlayer].StartCoroutine(EndTurn());
             OnShoot?.Invoke();
         }
 
         private void TakeDamage(int value, IDamagable iD, AbilityType ownerAbility)
-        {            
-            var abilityType = _abilitiesManager.GetAbility(_playerModel.AbilityID).Type;
+        {
+            var abilityType = _playersModels[_activePlayer].CurrentAbility.Type;
             var modifier = _damageModifier.GetModifier(ownerAbility, abilityType);
-            _playerModel.Health.TakeDamage(value * modifier);
+            _playersModels[_activePlayer].Health.TakeDamage(value * modifier);
 
-            if (_playerModel.Health.HP == 0)
+            if (_playersModels[_activePlayer].Health.HP == 0)
             {                
-                _endScreenController.StartLoseScreen(_playerModel.LifesCount);
+                _endScreenController.StartLoseScreen(_playersModels[_activePlayer].LifesCount);
             }
 
             UpdateHealthBar();
 
-            Debug.Log($"PlayerHealth {_playerModel.Health.HP}");
+            Debug.Log($"PlayerHealth {_playersModels[_activePlayer].Health.HP}");
         }
 
         private void UpdateHealthBar()
         {
-            var barValue = (float)_playerModel.Health.HP / _playerModel.Health.MaxHP;
-            _playerView.UpdateHealthBar(barValue);
+            for (int i = 0; i < _playersModels.Length; i++)
+            {
+                var barValue = (float)_playersModels[i].Health.HP / _playersModels[i].Health.MaxHP;
+                _playersViews[i].UpdateHealthBar(barValue);
+            }
         }
 
         private void UpdatePlayerLifes()
         {
-            _playerModel.LifesCount--;
+            _playersModels[_activePlayer].LifesCount--;
         }
 
         private IEnumerator EndTurn()

@@ -19,11 +19,11 @@ namespace TankGame
         private List<SkillButton> _skillButtons;
         private StartGameParametersManager _startGameParametersManager;
 
-        public SaveDataRepository(InputController inputController, PlayerModel playerModel, EnemyModel[] enemyModels, 
+        public SaveDataRepository(InputController inputController, /*PlayerModel playerModel*/ EnemyModel[] enemyModels, 
                     SkillButtonsManager skillButtonsManager, StartGameParametersManager startGameParametersManager)
         {
             _inputController = inputController;
-            _playerModel = playerModel;
+            //_playerModel = playerModel;
             _enemyModels = enemyModels;
             _skillButtons = skillButtonsManager.GetAllSkillButtons();
             _startGameParametersManager = startGameParametersManager;

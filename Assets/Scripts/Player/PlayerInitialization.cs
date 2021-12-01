@@ -4,20 +4,29 @@ namespace TankGame
 {
     public class PlayerInitialization
     {
-        private PlayerFactory _playerFactory;
-        private Transform _player;
-
-        public PlayerInitialization(PlayerFactory playerFactory, Transform playerPosition)
+        private Transform[] _players;
+        public PlayerInitialization(PlayerFactory playerFactory, Transform[] playersPositions)
         {
-            _playerFactory = playerFactory;
-            _player = _playerFactory.CreatePlayer();
-            _player.position = playerPosition.position;
-            _player.rotation = playerPosition.rotation;
+            _players = playerFactory.CreatePlayers();
+
+            for (int i = 0; i < _players.Length; i++)
+            {
+                _players[i].position = playersPositions[i].position;
+                _players[i].rotation = playersPositions[i].rotation;
+            }
+
         }
 
-        public Transform GetPlayer()
-        {            
-            return _player;
+        public PlayerView[] GetPlayersViews()
+        {
+            var playerViews = new PlayerView[_players.Length];
+
+            for (int i = 0; i < _players.Length; i++)
+            {
+                playerViews[i] = _players[i].GetComponent<PlayerView>();
+            }
+
+            return playerViews;
         }
     }
 }

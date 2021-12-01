@@ -7,22 +7,22 @@ namespace TankGame
     public class PoolController : IInitializable, IController
     {
         private int _effectsCount;
-        private GameManager _gameManager;
+        private GameStarter _gameManager;
 
-        private GameObject _shellExplosionSample;
+        private GameObject _hitEffectSample;
         private GameObject _tankExplosionSample;
         private GameObject _shellSample;
 
-        private Transform _shellExplosionsContainer;
+        private Transform _hitEffectContainer;
         private Transform _tankExplosionsContainer;
         private Transform _shellContainer;
 
-        private List<GameObject> _shellExplosions;
+        private List<GameObject> _hitEffects;
         private List<GameObject> _tankExplosions;
         private List<GameObject> _shells;
-        public PoolController(GameData gameData, int effectsCount, GameManager gamemanager)
+        public PoolController(GameData gameData, int effectsCount, GameStarter gamemanager)
         {
-            _shellExplosionSample = gameData.PrefabsData.ShellExplosion;
+            _hitEffectSample = gameData.PrefabsData.HitEffect;
             _tankExplosionSample = gameData.PrefabsData.TankExplosion;
             _shellSample = gameData.PrefabsData.Shell;
 
@@ -32,23 +32,28 @@ namespace TankGame
 
         public void Initialization()
         {
-            _shellExplosionsContainer = new GameObject(name: "ShellExplosionsContainer").transform;
+            _hitEffectContainer = new GameObject(name: "ShellExplosionsContainer").transform;
             _tankExplosionsContainer = new GameObject(name: "TankExplosionsContainer").transform;
             _shellContainer = new GameObject(name: "ShellsContainer").transform;
 
-            _shellExplosionsContainer.parent = _gameManager.transform;
+            _hitEffectContainer.parent = _gameManager.transform;
             _tankExplosionsContainer.parent = _gameManager.transform;
             _shellContainer.parent = _gameManager.transform;
 
-            _shellExplosions = new List<GameObject>(_effectsCount);
+            _hitEffects = new List<GameObject>(_effectsCount);
             _tankExplosions = new List<GameObject>(_effectsCount);
             _shells = new List<GameObject>(_effectsCount);
 
             for (int i = 0; i < _effectsCount; i++)
             {
-                InitCollection(_shellExplosionSample, _shellExplosions, _shellExplosionsContainer);
+                InitCollection(_hitEffectSample, _hitEffects, _hitEffectContainer);
                 InitCollection(_tankExplosionSample, _tankExplosions, _tankExplosionsContainer);
                 InitCollection(_shellSample, _shells, _shellContainer);
+            }
+
+            for (int i = 0; i < _shells.Count; i++)
+            {
+                _shells[i].GetComponent<Shell>().OnHit += GetHitEffect;
             }
         }
 
@@ -59,9 +64,11 @@ namespace TankGame
             collection.Add(poolObject);
         }
 
-        public GameObject GetShellExplosion()
+        public void GetHitEffect(Transform transform)
         {
-            return GetObject(_shellExplosions);
+            var hitEffect = GetObject(_hitEffects);
+            hitEffect.transform.position = transform.position;
+            hitEffect.SetActive(true);
         }
 
         public GameObject GetTankExplosion()

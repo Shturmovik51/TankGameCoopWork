@@ -10,6 +10,7 @@ namespace TankGame
         public Health Health { get; }
         public int AbilityID { get; set; }
         public int LifesCount { get; set; }
+        public Ability CurrentAbility { get; set; }
         public PlayerModel(PlayerModelData playerModelData, StartGameParametersManager startGameParametersManager)
         {
             Tank = playerModelData.TankPrefab;

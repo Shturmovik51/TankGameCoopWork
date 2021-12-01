@@ -7,51 +7,51 @@ namespace TankGame
 
     public sealed class AbilityBase : ScriptableObject
     {
-        [SerializeField, HideInInspector] private List<Ability> _AbilitySamples;
-        [SerializeField] private Ability _currentAbility;
+        [SerializeField, HideInInspector] private List<AbilityModelData> _abilitySamples;
+        [SerializeField] private AbilityModelData _currentAbility;
         private int _currentNumberInArray;
 
-        public List<Ability> AbilitySamples => _AbilitySamples;
+        public List<AbilityModelData> AbilitySamples => _abilitySamples;
 
         public void CreateAbility()
         {
-            if (_AbilitySamples == null)
-                _AbilitySamples = new List<Ability>();
-            Ability AbilitySample = new Ability();
-            _AbilitySamples.Add(AbilitySample);
-            _currentAbility = AbilitySample;
-            _currentNumberInArray = _AbilitySamples.Count - 1;
+            if (_abilitySamples == null)
+                _abilitySamples = new List<AbilityModelData>();
+            AbilityModelData abilitySample = new AbilityModelData();
+            _abilitySamples.Add(abilitySample);
+            _currentAbility = abilitySample;
+            _currentNumberInArray = _abilitySamples.Count - 1;
         }
 
         public void RemoveAbility()
         {
-            if (_AbilitySamples == null)
+            if (_abilitySamples == null)
                 return;
-            if (_AbilitySamples.Count > 1)
+            if (_abilitySamples.Count > 1)
             {
-                _AbilitySamples.Remove(_currentAbility);
+                _abilitySamples.Remove(_currentAbility);
 
                 if (_currentNumberInArray > 0)
                     _currentNumberInArray--;
                 else
                     _currentNumberInArray = 0;
 
-                _currentAbility = _AbilitySamples[_currentNumberInArray];
+                _currentAbility = _abilitySamples[_currentNumberInArray];
             }
 
             else
             {
-                _AbilitySamples.Remove(_currentAbility);
+                _abilitySamples.Remove(_currentAbility);
                 CreateAbility();
             }
         }
 
         public void NextAbility()
         {
-            if (_AbilitySamples.Count > _currentNumberInArray + 1)
+            if (_abilitySamples.Count > _currentNumberInArray + 1)
             {
                 _currentNumberInArray++;
-                _currentAbility = _AbilitySamples[_currentNumberInArray];
+                _currentAbility = _abilitySamples[_currentNumberInArray];
             }
         }
 
@@ -61,7 +61,7 @@ namespace TankGame
             if (_currentNumberInArray > 0)
             {
                 _currentNumberInArray--;
-                _currentAbility = _AbilitySamples[_currentNumberInArray];
+                _currentAbility = _abilitySamples[_currentNumberInArray];
             }
         }
 

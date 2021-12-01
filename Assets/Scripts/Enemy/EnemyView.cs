@@ -22,7 +22,7 @@ namespace TankGame
         private bool _isOnRotation;
         private float _lerpProgress;
         private float _rotationTime = 1;
-        private EnemyStatsPanel _tankStatsPanel;
+        private EntiTyStatsPanel _tankStatsPanel;
 
         public bool IsOnRotation => _isOnRotation;
         public Rigidbody TankRigidbody => _tankRigidbody;
@@ -38,9 +38,10 @@ namespace TankGame
             shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
         }
 
-        public void InitStatsPanel(EnemyStatsPanel tankStatsPanel)
+        public void InitStatsPanel(EntiTyStatsPanel tankStatsPanel, UnitsUIPositionController unitsUIPositionController)
         {
             _tankStatsPanel = tankStatsPanel;
+            unitsUIPositionController.AddUIElement(transform, _tankStatsPanel.StatsPanel);
         }
 
         public void SetStartRotationParameters(Transform target)

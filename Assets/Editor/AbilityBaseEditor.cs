@@ -4,7 +4,7 @@ using UnityEditor;
 namespace TankGame
 {
     [CustomEditor(typeof(AbilityBase))]
-    public class DataBaseEditor : Editor
+    public class AbilityBaseEditor : Editor
     {
         private AbilityBase _abilityBase;
 
@@ -17,7 +17,7 @@ namespace TankGame
         {
             GUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("New Item"))
+            if (GUILayout.Button("New Ability"))
                 _abilityBase.CreateAbility();
             if (GUILayout.Button("<="))
                 _abilityBase.PrevAbility();

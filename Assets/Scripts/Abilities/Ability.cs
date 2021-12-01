@@ -3,20 +3,22 @@ using UnityEngine;
 
 namespace TankGame
 {
-    [Serializable]
     public class Ability : IAbility
     {
-        [SerializeField] private AbilityType _type;
-        [SerializeField] private int _cD;
-        [SerializeField] private Sprite _elementIcon;
-        [SerializeField] private Sprite _deathIcon;
-        [SerializeField] private int _iD;
-
-        public AbilityType Type => _type;
-        public int CD => _cD;
-        public int ID => _iD;
-        public Sprite ElementIcon => _elementIcon;
-        public Sprite DeathIcon => _deathIcon;
-        public bool IsActive { get; private set; }       
+        public AbilityType Type { get; }
+        public int CD { get; }
+        public Sprite ElementIcon { get; }
+        public Sprite DeathIcon { get; }
+        public int ID { get; }
+        public bool IsActive { get; private set; }  
+        
+        public Ability (AbilityType type, int cD, Sprite elementIcon, Sprite deathIcon, int iD)
+        {
+            Type = type;
+            CD = cD;
+            ElementIcon = elementIcon;
+            DeathIcon = deathIcon;
+            ID = iD;
+        }
     }
 }

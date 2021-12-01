@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TankGame
@@ -10,21 +8,21 @@ namespace TankGame
         private Transform _parentTransform;
         private AbilitiesManager _abilitiesManager;
 
-        public EnemyUIFactory(GameData gameData, GameObject enemiesPanel, AbilitiesManager abilitiesManager)
+        public EnemyUIFactory(GameData gameData, /*GameObject enemiesPanel*/Canvas canvas, AbilitiesManager abilitiesManager)
         {
             _statsPanelPref = gameData.PrefabsData.EnemyUI;
-            _parentTransform = enemiesPanel.transform;
+            _parentTransform = canvas.transform;
             _abilitiesManager = abilitiesManager;
         }
 
-        public EnemyStatsPanel GetEnemyStatsPanel(EnemyModel enemyModel, int iD)
+        public EntiTyStatsPanel GetEnemyStatsPanel(EnemyView enemyView, int iD)
         {
             var panelObject = Object.Instantiate(_statsPanelPref, _parentTransform);
-            var panel = new EnemyStatsPanel(panelObject);
+            var panel = new EntiTyStatsPanel(panelObject);
 
             panel.UpdateTitle($"Enemy {iD+1}")
-                 .UpdateElement(_abilitiesManager.GetAbility(enemyModel.AbilityID).ElementIcon)
-                 .SetDeathIcon(_abilitiesManager.GetAbility(enemyModel.AbilityID).DeathIcon);
+                 .UpdateElement(_abilitiesManager.GetAbility(enemyView.gameObject).ElementIcon)
+                 .SetDeathIcon(_abilitiesManager.GetAbility(enemyView.gameObject).DeathIcon);
 
             return panel;
         }
