@@ -1,20 +1,24 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace TankGame
 {
-    public class EnemyView : MonoBehaviour, IDamagable
+    public class EnemyView : MonoBehaviour, IDamagable, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
+        public Action<EnemyView> OnClickMe;
+        public Action<EnemyView> OnPointerEnterMe;
+        public Action OnPointerExitMe;
+        public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
+        public Action OnChangeTurn;
+        public event Action OnReadyToShoot;
+
         [SerializeField] private Transform _shellStartPosition;
         [SerializeField] private Transform _tankTower;
         [SerializeField] private Rigidbody _tankRigidbody;
         [SerializeField] private ParticleSystem _explosionBody;
         [SerializeField] private ParticleSystem _explosionTover;
         [SerializeField] private BoxCollider _tankCollider;
-
-        public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
-        public Action OnChangeTurn;
-        public event Action OnReadyToShoot;
 
         private Quaternion _startDirection;
         private Quaternion _targetDirection;
@@ -90,6 +94,21 @@ namespace TankGame
             }
             _explosionBody.gameObject.SetActive(true);
             _explosionTover.gameObject.SetActive(true);
-        }       
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            OnClickMe?.Invoke(this);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            OnPointerEnterMe?.Invoke(this);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            OnPointerExitMe?.Invoke();
+        }    
     }
 }

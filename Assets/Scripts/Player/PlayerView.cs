@@ -6,16 +6,27 @@ namespace TankGame
 {
     public class PlayerView : MonoBehaviour, IDamagable
     {
+        public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
+        public Action OnChangeTurn;
+        public event Action OnReadyToShoot;
+
         [SerializeField] private Transform _shellStartPosition;
         [SerializeField] private Transform _tankTower;
         [SerializeField] private Rigidbody _tankRigidbody;
         [SerializeField] private ParticleSystem _explosionBody;
         [SerializeField] private ParticleSystem _explosionTover;
-        public Action<int, IDamagable, AbilityType> OnTakeDamage { get; set; }
-        public Action OnChangeTurn;
         private int _rotationSpeed = 2;
         // private Image _healthBar;
+
+        private Quaternion _startDirection;
+        private Quaternion _targetDirection;
+
+        private bool _isOnRotation;
+        private float _lerpProgress;
+        private float _rotationTime = 1;
         private EntiTyStatsPanel _playerStatsPanel;
+
+        public bool IsOnRotation => _isOnRotation;
 
         public void InitStatsPanel(EntiTyStatsPanel playerStatsPanel)
         {
@@ -32,11 +43,48 @@ namespace TankGame
             shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
         }
 
-        public void Rotate(Transform target, float deltaTime)
+        public void SetStartRotationParameters(Transform target)
         {
-            var pos = target.position - _tankTower.transform.position;
-            var rot = Vector3.RotateTowards(_tankTower.transform.forward, pos, _rotationSpeed * deltaTime, 0.0f);
-            _tankTower.transform.rotation = Quaternion.LookRotation(rot);
+            _startDirection = _tankTower.transform.rotation;
+            _targetDirection = Quaternion.LookRotation(target.transform.position - _tankTower.transform.position);
+            _lerpProgress = 0;
+            _isOnRotation = true;
+        }
+
+        public void Rotate(float deltaTime)
+        {
+            if (!_isOnRotation) return;
+
+            _lerpProgress += deltaTime / _rotationTime;
+
+            _tankTower.transform.rotation = Quaternion.Lerp(_startDirection, _targetDirection, _lerpProgress);
+
+            if (_lerpProgress > 1)
+            {
+                _lerpProgress = 0;
+                _isOnRotation = false;
+                OnReadyToShoot?.Invoke();
+            }
+        }
+
+        public void Explosion()
+        {
+            var explosionPosition = transform.position;
+            var explRadius = 3;
+
+            Collider[] colliders = Physics.OverlapSphere(explosionPosition, explRadius);
+
+            foreach (var hit in colliders)
+            {
+                Rigidbody hitRB = hit.GetComponent<Rigidbody>();
+                if (hitRB != null && hitRB != _tankRigidbody)
+                {
+                    hitRB.isKinematic = false;
+                    hitRB.AddExplosionForce(200, transform.position, explRadius, 3.0f, ForceMode.Impulse);
+                }
+            }
+            _explosionBody.gameObject.SetActive(true);
+            _explosionTover.gameObject.SetActive(true);
         }
 
         public void UpdateHealthBar(float barValue)

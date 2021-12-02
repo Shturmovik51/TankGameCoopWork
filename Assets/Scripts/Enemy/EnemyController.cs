@@ -14,30 +14,33 @@ namespace TankGame
         private int _curentEnemy;
         private int _readyEnemiesCount;
         private bool _isRevenge;
-        private Transform[] _targetPositions;
+        private Transform[] _targetsPositions;
         private DamageModifier _damageModifier;
         private EndScreenController _endScreenController;
         private EnemiesStateController _enemiesStatesController;
+        private EnemyTargetProvider _enemyTargetProvider;
         public int CurentEnemy => _curentEnemy;
 
         public EnemyController(EnemyModel[] enemyModels, EnemyView[] enemyViews, PoolController poolController, 
-                        PlayerView[] playersViews, AbilitiesManager abilitiesManager, DamageModifier damageModifier, 
-                                EndScreenController endScreenController, EnemiesStateController enemiesStatesController)
+                    PlayerView[] playersViews, AbilitiesManager abilitiesManager, DamageModifier damageModifier, 
+                        EndScreenController endScreenController, EnemiesStateController enemiesStatesController, 
+                            EnemyTargetProvider enemyTargetProvider)
         {
             _enemyModels = enemyModels;
             _enemyViews = enemyViews;
             _poolController = poolController;
-
-            _targetPositions = new Transform[playersViews.Length];
-            for (int i = 0; i < playersViews.Length; i++)
-            {
-                _targetPositions[i] = playersViews[i].gameObject.transform;
-            }
-
+            _targetsPositions = new Transform[playersViews.Length];
             _abilitiesManager = abilitiesManager;
             _damageModifier = damageModifier;
             _endScreenController = endScreenController;
             _enemiesStatesController = enemiesStatesController;
+            _enemyTargetProvider = enemyTargetProvider;
+
+            for (int i = 0; i < playersViews.Length; i++)
+            {
+                _targetsPositions[i] = playersViews[i].gameObject.transform;
+            }
+
         }
 
         public void Initialization()
@@ -94,7 +97,7 @@ namespace TankGame
         {  
             foreach (var view in _enemyViews)
             {
-                view.SetStartRotationParameters(_targetPositions[0]);
+                view.SetStartRotationParameters(_enemyTargetProvider.GetRandomTarget());
             }
 
             foreach (var model in _enemyModels)
@@ -217,7 +220,7 @@ namespace TankGame
 
         private IEnumerator StartTurnDelay()
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
             RevengeTurn();
         }
     }

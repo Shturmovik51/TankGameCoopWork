@@ -28,12 +28,12 @@ namespace TankGame
             _rigidbody = rigidbody;
             _isFirstUp = true;
             _tankCollider = tankCollider;
-            _tankCollider.enabled = false;
+            //_tankCollider.enabled = false;
         }
 
         public void ExitState()
         {
-            _tankCollider.enabled = true;
+            //_tankCollider.enabled = true;
         }
 
         public void Levitate()

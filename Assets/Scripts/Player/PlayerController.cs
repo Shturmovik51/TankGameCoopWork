@@ -9,7 +9,7 @@ namespace TankGame
         public event Action OnShoot;
         public event Action OnEndTurn;
 
-        private TargetProvider _targetProvider;
+        private PlayerTargetProvider _targetProvider;
         private PlayerModel[] _playersModels;
         private PlayerView[] _playersViews;
         private InputController _inputController;
@@ -18,12 +18,15 @@ namespace TankGame
         private EndScreenController _endScreenController;
         private AbilitiesManager _abilitiesManager;
         private SkillButtonsManager _skillButtonsManager;
+        private GameObject[] _playersSkillPanels;
         private bool _isShootDelay;
         private int _activePlayer;
+        private Transform _currentTarget;
 
         public PlayerController(PlayerModel[] playersModels, PlayerView[] playersViews, InputController inputController,
                     PoolController poolController, DamageModifier damageModifier, EndScreenController endScreenController, 
-                        AbilitiesManager abilitiesManager, TargetProvider targetProvider, SkillButtonsManager skillButtonsManager)
+                        AbilitiesManager abilitiesManager, PlayerTargetProvider targetProvider, 
+                            SkillButtonsManager skillButtonsManager, GameObject[] playersSkillPanels)
         {
             _playersModels = playersModels;
             _playersViews = playersViews;
@@ -34,30 +37,35 @@ namespace TankGame
             _abilitiesManager = abilitiesManager;
             _targetProvider = targetProvider;
             _skillButtonsManager = skillButtonsManager;
+            _playersSkillPanels = playersSkillPanels;
         }
+
         public void Initialization()
         {
             UpdateHealthBar();
+            UpdateElement();
 
-            _inputController.OnClickShootButton += PlayerShoot;
+            _inputController.OnClickShootButton += StartShootProcedure;
+            _endScreenController.OnTakeLife += UpdatePlayerLifes;
 
             for (int i = 0; i < _playersViews.Length; i++)
             {
                 _playersViews[i].OnTakeDamage += TakeDamage;
+                _playersViews[i].OnReadyToShoot += PlayerShoot;
+                _playersSkillPanels[i].SetActive(false);
             }
-            _endScreenController.OnTakeLife += UpdatePlayerLifes;
         }
 
         public void CleanUp()
         {
-            _inputController.OnClickShootButton -= PlayerShoot;
+            _inputController.OnClickShootButton -= StartShootProcedure;
+            _endScreenController.OnTakeLife -= UpdatePlayerLifes;
 
             for (int i = 0; i < _playersViews.Length; i++)
             {
                 _playersViews[i].OnTakeDamage -= TakeDamage;
+                _playersViews[i].OnReadyToShoot -= PlayerShoot;
             }
-
-            _endScreenController.OnTakeLife -= UpdatePlayerLifes;
         }
 
         public void LocalUpdate(float deltaTime)
@@ -68,43 +76,100 @@ namespace TankGame
         public void StartPlayerTurn()
         {
             _isShootDelay = false;
+            _activePlayer++;
+
+            if (_activePlayer >= _playersModels.Length)
+            {
+                _activePlayer = 0;
+            }
+
+            if (_playersModels[_activePlayer].IsDead)
+            {
+                StartPlayerTurn();
+            }
+            else
+            {
+                EnableActivePlayerSkillPanel();
+            }
+        }
+
+        public void StartShootProcedure()
+        {
+            var activeButton = _skillButtonsManager.GetActiveSkillButton();
+
+            if (activeButton == null) return;
+
+            var ability = _abilitiesManager.GetAbility(activeButton.Button.gameObject);
+            _playersModels[_activePlayer].CurrentAbility = ability;
+            UpdateElement();
+
+            if (ability.Type == AbilityType.GroundAbility)
+            {
+                _currentTarget = _targetProvider.GetRandomTarget();
+            }
+            else
+            {
+                _currentTarget = _targetProvider.GetTarget();
+            }
+
+            _playersViews[_activePlayer].SetStartRotationParameters(_currentTarget);
         }
 
         private void RotateToTarget(float deltatime)
-        {
-            _playersViews[_activePlayer].Rotate(_targetProvider.GetTarget(), deltatime);            
-        }
+        {            
+            if(_playersViews[_activePlayer].IsOnRotation)
+                _playersViews[_activePlayer].Rotate(deltatime);            
+        }       
 
         private void PlayerShoot()
-        {
+        { 
             if (_isShootDelay) return;
 
             _isShootDelay = true;
 
             var shell = _poolController.GetShell();
-            var activeButton = _skillButtonsManager.GetActiveSkillButton();
-            var ability = _abilitiesManager.GetAbility(activeButton.Button.gameObject);
-            _playersModels[_activePlayer].CurrentAbility = ability;
+            var ability = _playersModels[_activePlayer].CurrentAbility;
             shell.GetComponent<Shell>().SetDamageValue(_playersModels[_activePlayer].ShootDamageForce, ability.Type);
             _playersViews[_activePlayer].Shoot(shell, _playersModels[_activePlayer].ShootLaunchForce);              
             _playersViews[_activePlayer].StartCoroutine(EndTurn());
             OnShoot?.Invoke();
         }
 
-        private void TakeDamage(int value, IDamagable iD, AbilityType ownerAbility)
+        private void TakeDamage(int value, IDamagable view, AbilityType ownerAbility)
         {
-            var abilityType = _playersModels[_activePlayer].CurrentAbility.Type;
-            var modifier = _damageModifier.GetModifier(ownerAbility, abilityType);
-            _playersModels[_activePlayer].Health.TakeDamage(value * modifier);
+            for (int i = 0; i < _playersViews.Length; i++)
+            {
+                if ((IDamagable)_playersViews[i] == view)
+                {
+                    var abilityType = _playersModels[_activePlayer].CurrentAbility.Type;
+                    var modifier = _damageModifier.GetModifier(ownerAbility, abilityType);
+                    _playersModels[i].Health.TakeDamage(value * modifier);
 
-            if (_playersModels[_activePlayer].Health.HP == 0)
-            {                
-                _endScreenController.StartLoseScreen(_playersModels[_activePlayer].LifesCount);
+                    if (_playersModels[i].Health.HP == 0)
+                    {
+                        _playersModels[i].IsDead = true;
+                        _playersViews[i].Explosion();
+                    }
+
+                    if (AllPlayersDead())
+                        _endScreenController.StartLoseScreen(_playersModels[i].LifesCount);  //todo неправильный отсчет жизней
+
+                    UpdateHealthBar();
+
+                    Debug.Log($"PlayerHealth {_playersModels[i].Health.HP}");
+                }
             }
+        }
 
-            UpdateHealthBar();
-
-            Debug.Log($"PlayerHealth {_playersModels[_activePlayer].Health.HP}");
+        private bool AllPlayersDead()
+        {
+            var alldead = true;
+            for (int i = 0; i < _playersModels.Length; i++)
+            {
+                if (!_playersModels[i].IsDead)
+                    alldead = false;
+            }
+            return alldead;
         }
 
         private void UpdateHealthBar()
@@ -113,6 +178,18 @@ namespace TankGame
             {
                 var barValue = (float)_playersModels[i].Health.HP / _playersModels[i].Health.MaxHP;
                 _playersViews[i].UpdateHealthBar(barValue);
+            }
+        }
+
+        private void UpdateElement()
+        {
+            for (int i = 0; i < _playersModels.Length; i++)
+            {
+                if (!_playersModels[i].IsDead)
+                {
+                    var icon = _playersModels[i].CurrentAbility.ElementIcon;
+                    _playersViews[i].UpdateElement(icon);
+                }
             }
         }
 
@@ -125,6 +202,16 @@ namespace TankGame
         {
             yield return new WaitForSeconds(1);
             OnEndTurn?.Invoke();
+        }
+
+        private void EnableActivePlayerSkillPanel()
+        {
+            for (int i = 0; i < _playersSkillPanels.Length; i++)
+            {
+                _playersSkillPanels[i].SetActive(false);
+            }
+
+            _playersSkillPanels[_activePlayer].SetActive(true);
         }
     }
 }

@@ -8,28 +8,24 @@ namespace TankGame
     {
 
         private List<SkillButton> _skillButtons;
-        PlayerController _playerController;
-
-        public SkillButtonsActiveStateController(SkillButtonsManager skillButtonsManager, PlayerController playerController)
+        private TargetMarkerSizeController _targetMarkerSizeController;
+        public SkillButtonsActiveStateController(SkillButtonsManager skillButtonsManager, TargetMarkerSizeController targetMarkerSizeController)
         {
             _skillButtons = skillButtonsManager.GetAllSkillButtons();
-            _playerController = playerController;
+            _targetMarkerSizeController = targetMarkerSizeController;
         }
 
         public void Initialization()
         {
-            //_playerController.OnShoot += ResetButtonsState;
-
             foreach (var skillButton in _skillButtons)
             {
                 skillButton.Button.onClick.AddListener(() => SetActiveState(skillButton));
+                skillButton.Button.onClick.AddListener(() => _targetMarkerSizeController.ChangeMarkerSize(skillButton));
             }
         }
 
         public void CleanUp()
         {
-            //_playerController.OnShoot -= ResetButtonsState;
-
             foreach (var skillButton in _skillButtons)
             {
                 skillButton.Button.onClick.RemoveAllListeners();

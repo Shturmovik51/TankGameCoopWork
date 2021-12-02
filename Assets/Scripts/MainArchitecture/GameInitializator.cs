@@ -26,7 +26,7 @@ namespace TankGame
 
             //var enemiesPanel = Object.Instantiate(gameData.PrefabsData.EnemiesPanel, canvas.transform);
             var playersSkillPanels = new GameObject[playersPositions.Length];
-            var playersHPpanels = new GameObject[playersPositions.Length];
+            //var playersHPpanels = new GameObject[playersPositions.Length];
 
             for (int i = 0; i < playersPositions.Length; i++)
             {
@@ -37,7 +37,7 @@ namespace TankGame
 
 
             var playerFactory = new PlayerFactory(gameData, startGameParametersManager);
-            var playerUIFactory = new PlayerUIFactory(gameData, canvas, abilitiesManager);
+            var playerUIFactory = new PlayerUIFactory(gameData, canvas);
             var playerInitialization = new PlayerInitialization(playerFactory, playersPositions);
             var playersModels = playerFactory.GetPlayersModels();
             var playersViews = playerInitialization.GetPlayersViews();
@@ -63,10 +63,11 @@ namespace TankGame
             var enemyFactory = new EnemyFactory(enemyModels, gameData, abilitiesManager);
             var enemyInitialisation = new EnemyInitialization(enemyFactory, enemiesPositions);
             var enemyViews = new EnemyView[enemyCount];
-            var targetprovider = new TargetProvider(enemyModels, enemyViews);
+            var playerTargetprovider = new PlayerTargetProvider(enemyModels, enemyViews);
+            var enemyTargetProvider = new EnemyTargetProvider(playersModels, playersViews);
 
-
-            var skillButtonsFactory = new SkillButtonsFactory(gameData, playersSkillPanels, abilitiesManager, startGameParametersManager);
+            var skillButtonsFactory = new SkillButtonsFactory(gameData, playersSkillPanels, abilitiesManager, 
+                                                    startGameParametersManager, playersModels);
             var skillButtonsManager = new SkillButtonsManager(skillButtonsFactory);
 
             var enemyUIFactory = new EnemyUIFactory(gameData, canvas, abilitiesManager);
@@ -79,17 +80,20 @@ namespace TankGame
             }
 
             var enemyController = new EnemyController(enemyModels, enemyViews, poolController, playersViews, abilitiesManager, 
-                                            damageModifier, endScreenController, enemiesStatesController);
+                                            damageModifier, endScreenController, enemiesStatesController, enemyTargetProvider);
 
             var playerController = new PlayerController(playersModels, playersViews, inputController, poolController, damageModifier, 
-                                            endScreenController, abilitiesManager, targetprovider, skillButtonsManager);
+                                endScreenController, abilitiesManager, playerTargetprovider, skillButtonsManager, playersSkillPanels);
 
             var turnController = new TurnController(uIFields, enemyViews, playerController, enemyController);
-            var skillButtonActiveStateController = new SkillButtonsActiveStateController(skillButtonsManager, playerController);
+            var targetController = new TargetController(enemyViews, enemyModels, turnController, gameData, skillButtonsManager, 
+                                            abilitiesManager, playerController);
+            var targetMarkerSizeController = new TargetMarkerSizeController(targetController, abilitiesManager);
+            var skillButtonActiveStateController = new SkillButtonsActiveStateController(skillButtonsManager, targetMarkerSizeController);
             var skillButtonCDStateController = new SkillButtonsCDStateController(skillButtonsManager, turnController, playerController);
-            var targetController = new TargetController(enemyViews, enemyModels, turnController, gameData, inputController);
 
-            endscreen.transform.SetSiblingIndex(5); //todo подумать, как сделать нормальнов
+
+            endscreen.transform.SetSiblingIndex(10); //todo подумать, как сделать нормальнов
 
             var saveDataRepository = new SaveDataRepository(inputController,/* playersModels*/ enemyModels, skillButtonsManager, 
                                             startGameParametersManager);

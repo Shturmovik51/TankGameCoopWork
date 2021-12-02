@@ -8,13 +8,12 @@ namespace TankGame
     {
         private GameObject _statsPanelPref;
         private Transform _parentTransform;
-        private AbilitiesManager _abilitiesManager;
-
-        public PlayerUIFactory(GameData gameData, Canvas canvas, AbilitiesManager abilitiesManager)
+        private GameData _gameData;
+        public PlayerUIFactory(GameData gameData, Canvas canvas)
         {
             _statsPanelPref = gameData.PrefabsData.PlayerUI;
             _parentTransform = canvas.transform;
-            _abilitiesManager = abilitiesManager;
+            _gameData = gameData;
         }
 
         public EntiTyStatsPanel GetPlayerStatsPanel(PlayerView playerView, int iD)
@@ -22,9 +21,9 @@ namespace TankGame
             var panelObject = Object.Instantiate(_statsPanelPref, _parentTransform);
             var panel = new EntiTyStatsPanel(panelObject);
 
-            panel.UpdateTitle($"Player {iD + 1}");
+            panel.UpdateTitle($"Player {iD + 1}")
                  //.UpdateElement(_abilitiesManager.GetAbility(playerView.gameObject).ElementIcon)
-                 //.SetDeathIcon(_abilitiesManager.GetAbility(playerView.gameObject).DeathIcon);
+                 .SetDeathIcon(_gameData.AbilityBase.AbilitySamples[0].DeathIcon);
 
             return panel;
         }

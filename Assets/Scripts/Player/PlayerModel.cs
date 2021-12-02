@@ -11,6 +11,7 @@ namespace TankGame
         public int AbilityID { get; set; }
         public int LifesCount { get; set; }
         public Ability CurrentAbility { get; set; }
+        public bool IsDead { get; set; }
         public PlayerModel(PlayerModelData playerModelData, StartGameParametersManager startGameParametersManager)
         {
             Tank = playerModelData.TankPrefab;
