@@ -142,7 +142,8 @@ namespace TankGame
                 var enemy = _enemyViews[index];
 
                 if (!_enemyModels[index].IsDead && !_enemyModels[index].IsFlying)
-                    _enemiesStatesController.SetFlyingState(index, enemy.transform, enemy.TankRigidbody, enemy.TankCollider);
+                    _enemiesStatesController.SetFlyingState(index, enemy.transform, enemy.TankRigidbody, 
+                                                                enemy.TankCollider, enemy.FlyEffect);
             }
         }
 

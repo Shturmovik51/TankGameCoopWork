@@ -19,6 +19,8 @@ namespace TankGame
         [SerializeField] private ParticleSystem _explosionBody;
         [SerializeField] private ParticleSystem _explosionTover;
         [SerializeField] private BoxCollider _tankCollider;
+        [SerializeField] private ParticleSystem _shootEffect;
+        [SerializeField] private ParticleSystem _flyEffect;
 
         private Quaternion _startDirection;
         private Quaternion _targetDirection;
@@ -28,6 +30,7 @@ namespace TankGame
         private float _rotationTime = 1;
         private EntiTyStatsPanel _tankStatsPanel;
 
+        public ParticleSystem FlyEffect => _flyEffect;
         public bool IsOnRotation => _isOnRotation;
         public Rigidbody TankRigidbody => _tankRigidbody;
         public BoxCollider TankCollider => _tankCollider;
@@ -40,6 +43,7 @@ namespace TankGame
             var shellRigidBody = shell.GetComponent<Rigidbody>();
             shellRigidBody.velocity = Vector3.zero;
             shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
+            _shootEffect.Play();
         }
 
         public void InitStatsPanel(EntiTyStatsPanel tankStatsPanel, UnitsUIPositionController unitsUIPositionController)

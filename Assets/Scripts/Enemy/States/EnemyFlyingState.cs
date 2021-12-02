@@ -14,6 +14,7 @@ namespace TankGame
         private float _flyingForce = 1000;
         private float _stabilizingForce = 200;
         private bool _isFirstUp;
+        private ParticleSystem _flyEffect;
 
         public EnemyFlyingState()
         {
@@ -22,17 +23,20 @@ namespace TankGame
             IsReadyToShoot = false;
         }
 
-        public void EnterState(Transform enemy, Rigidbody rigidbody, BoxCollider tankCollider)
+        public void EnterState(Transform enemy, Rigidbody rigidbody, BoxCollider tankCollider, ParticleSystem flyEffect)
         {
             _enemy = enemy;
             _rigidbody = rigidbody;
             _isFirstUp = true;
             _tankCollider = tankCollider;
+            _flyEffect = flyEffect;
+            _flyEffect.Play();
             //_tankCollider.enabled = false;
         }
 
         public void ExitState()
         {
+            _flyEffect.Stop();
             //_tankCollider.enabled = true;
         }
 

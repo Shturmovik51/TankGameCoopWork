@@ -16,6 +16,7 @@ namespace TankGame
         [SerializeField] private ParticleSystem _explosionBody;
         [SerializeField] private ParticleSystem _explosionTover;
         [SerializeField] private Transform _marker;
+        [SerializeField] private ParticleSystem _shootEffect;
         private int _rotationSpeed = 2;
         // private Image _healthBar;
 
@@ -43,6 +44,7 @@ namespace TankGame
             var shellRigidBody = shell.GetComponent<Rigidbody>();
             shellRigidBody.velocity = Vector3.zero;
             shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
+            _shootEffect.Play();
         }
 
         public void SetStartRotationParameters(Transform target)

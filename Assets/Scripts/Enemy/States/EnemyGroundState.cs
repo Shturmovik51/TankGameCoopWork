@@ -15,7 +15,7 @@ namespace TankGame
             IsReadyToShoot = true;
         }
 
-        public void EnterState(Transform enemy, Rigidbody rigidbody, BoxCollider tankCollider)
+        public void EnterState(Transform enemy, Rigidbody rigidbody, BoxCollider tankCollider, ParticleSystem flyEffect)
         {
             
         }
