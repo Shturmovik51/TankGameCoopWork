@@ -23,6 +23,8 @@ namespace TankGame
         private int _activePlayer;
         private Transform _currentTarget;
 
+        public int ActivePlayer => _activePlayer;
+
         public PlayerController(PlayerModel[] playersModels, PlayerView[] playersViews, InputController inputController,
                     PoolController poolController, DamageModifier damageModifier, EndScreenController endScreenController, 
                         AbilitiesManager abilitiesManager, PlayerTargetProvider targetProvider, 

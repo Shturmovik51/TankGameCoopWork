@@ -55,20 +55,22 @@ namespace TankGame
         {
             OnSetPlayerTurn?.Invoke();
             _playerController.StartPlayerTurn();
+            UpdateTurnPanel(_playerController);
         }
 
         private void SetEnemyTurn()
         {
             OnSetEnemyTurn?.Invoke();
             _enemyController.StartEnemyTurn();
+            UpdateTurnPanel(_enemyController);
         }
 
         private void UpdateTurnPanel<T>(T controller)
         {
-            if(controller is PlayerController)
-                _turnText.text = "Player Turn";
-            if(controller is EnemyController)
-                _turnText.text = $"Enemy {_enemyController.CurentEnemy + 1} Turn";
+            if (controller is PlayerController)
+                _turnText.text = $"Player {_playerController.ActivePlayer + 1} Turn";
+            if (controller is EnemyController)
+                _turnText.text = $"Enemies Turn";
         }
     }
 }
