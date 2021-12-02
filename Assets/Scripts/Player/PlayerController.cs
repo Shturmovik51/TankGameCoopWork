@@ -93,6 +93,7 @@ namespace TankGame
             else
             {
                 EnableActivePlayerSkillPanel();
+                _skillButtonsManager.SetAllButtonsNotInCDToActive();
                 _playersViews[_activePlayer].Marker.gameObject.SetActive(true);
             }
         }
@@ -117,6 +118,9 @@ namespace TankGame
             }
 
             _playersViews[_activePlayer].SetStartRotationParameters(_currentTarget);
+
+            OnShoot?.Invoke();
+            _skillButtonsManager.SetAllButtonsNotInCDToInActive();
         }
 
         private void RotateToTarget(float deltatime)
@@ -135,8 +139,9 @@ namespace TankGame
             var ability = _playersModels[_activePlayer].CurrentAbility;
             shell.GetComponent<Shell>().SetDamageValue(_playersModels[_activePlayer].ShootDamageForce, ability.Type);
             _playersViews[_activePlayer].Shoot(shell, _playersModels[_activePlayer].ShootLaunchForce);              
-            _playersViews[_activePlayer].StartCoroutine(EndTurn());
-            OnShoot?.Invoke();
+            _playersViews[_activePlayer].StartCoroutine(EndTurn());           
+
+           // OnShoot?.Invoke();
         }
 
         private void TakeDamage(int value, IDamagable view, AbilityType ownerAbility)

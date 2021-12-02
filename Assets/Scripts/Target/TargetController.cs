@@ -15,7 +15,8 @@ namespace TankGame
         public GameObject TargetMarker => _targetMarker;
         private AbilitiesManager _abilitiesManager;
         public TargetController(EnemyView[] enemyViews, EnemyModel[] enemyModels, TurnController turnPanelController, 
-              GameData gameData, SkillButtonsManager skillButtonsManager, AbilitiesManager abilitiesManager, PlayerController playerController)
+                    GameData gameData, SkillButtonsManager skillButtonsManager, AbilitiesManager abilitiesManager, 
+                            PlayerController playerController)
         {
             _enemyViews = enemyViews;
             _enemyModels = enemyModels;
@@ -57,7 +58,12 @@ namespace TankGame
         private void SetOnClickTarget(EnemyView enemyView)
         {
             if (!_isOnSearchTarget) return;
+
+            var activeskillbutton = _skillButtonsManager.GetActiveSkillButton();
+            if (activeskillbutton == null) return;
+
             _isOnSearchTarget = false;
+
             _playerController.StartShootProcedure();
         }
 
@@ -66,7 +72,7 @@ namespace TankGame
             if (!_isOnSearchTarget) return;
 
             var activeskillbutton = _skillButtonsManager.GetActiveSkillButton();
-            if (activeskillbutton == null) return;
+            if (activeskillbutton == null) return;            
 
             var ability = _abilitiesManager.GetAbility(activeskillbutton.Button.gameObject);
 
