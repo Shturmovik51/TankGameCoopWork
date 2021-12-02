@@ -7,7 +7,7 @@ namespace TankGame
     public class SkillButtonsFactory
     {
         private Dictionary<GameObject, Ability> _abilities;
-        private List<AbilityModelData> _abilitiesSet;
+        private List<AbilityModelData> _abilitiesSamples;
         private GameObject _skillButtonPref;
         private GameObject[] _playersSkillPanels;
         private PlayerModel[] _playersModels;
@@ -16,7 +16,7 @@ namespace TankGame
                     StartGameParametersManager startGameParametersManager, PlayerModel[] playersModels)
         {
             _abilities = abilitiesManager.Abilities;
-            _abilitiesSet = gameData.AbilityBase.AbilitySamples;
+            _abilitiesSamples = gameData.AbilityBase.AbilitySamples;
             _skillButtonPref = gameData.PrefabsData.SkillButton;
             _playersModels = playersModels;
             _startGameParametersManager = startGameParametersManager;
@@ -25,19 +25,22 @@ namespace TankGame
 
         public List<SkillButton> GetSkillButtons()
         {
-            var skillButtons = new List<SkillButton>(_abilitiesSet.Count);
+            var skillButtons = new List<SkillButton>(_abilitiesSamples.Count);
 
             for (int i = 0; i < _playersSkillPanels.Length; i++)
             {
                 var skillButtonsParent = _playersSkillPanels[i].GetComponentInChildren<HorizontalLayoutGroup>().transform;
                 var currentAbilitiesSet = new List<Ability>();
 
-                for (int j = 0; j < _abilitiesSet.Count; j++)
+                for (int j = 0; j < _abilitiesSamples.Count; j++)
                 {                    
                     var button = Object.Instantiate(_skillButtonPref).GetComponent<Button>(); 
                     
-                    var ability = new Ability(_abilitiesSet[j].Type, _abilitiesSet[j].CD, _abilitiesSet[j].ElementIcon, 
-                                                _abilitiesSet[j].DeathIcon, _abilitiesSet[j].ID);
+                    var ability = new Ability(_abilitiesSamples[j].Type, _abilitiesSamples[j].CD, _abilitiesSamples[j].ElementIcon, 
+                                                _abilitiesSamples[j].DeathIcon, _abilitiesSamples[j].ID);
+
+                    var helpText = button.GetComponent<Helper>().HelpText;
+                    helpText.text = _abilitiesSamples[j].HelpText;
 
                     button.transform.parent = skillButtonsParent;                   
 
