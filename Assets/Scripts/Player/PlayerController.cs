@@ -45,7 +45,8 @@ namespace TankGame
             UpdateHealthBar();
             UpdateElement();
 
-            _inputController.OnClickShootButton += StartShootProcedure;
+            _activePlayer = -1;
+            //_inputController.OnClickShootButton += StartShootProcedure;
             _endScreenController.OnTakeLife += UpdatePlayerLifes;
 
             for (int i = 0; i < _playersViews.Length; i++)
@@ -58,7 +59,7 @@ namespace TankGame
 
         public void CleanUp()
         {
-            _inputController.OnClickShootButton -= StartShootProcedure;
+            //_inputController.OnClickShootButton -= StartShootProcedure;
             _endScreenController.OnTakeLife -= UpdatePlayerLifes;
 
             for (int i = 0; i < _playersViews.Length; i++)
@@ -90,6 +91,7 @@ namespace TankGame
             else
             {
                 EnableActivePlayerSkillPanel();
+                _playersViews[_activePlayer].Marker.gameObject.SetActive(true);
             }
         }
 
@@ -200,6 +202,12 @@ namespace TankGame
 
         private IEnumerator EndTurn()
         {
+            for (int i = 0; i < _playersViews.Length; i++)
+            {
+                _playersViews[i].Marker.gameObject.SetActive(false);
+            }
+
+
             yield return new WaitForSeconds(1);
             OnEndTurn?.Invoke();
         }

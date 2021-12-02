@@ -57,6 +57,7 @@ namespace TankGame
         private void SetOnClickTarget(EnemyView enemyView)
         {
             if (!_isOnSearchTarget) return;
+            _isOnSearchTarget = false;
             _playerController.StartShootProcedure();
         }
 
@@ -81,7 +82,7 @@ namespace TankGame
             {
                 for (int i = 0; i < _enemyViews.Length; i++)
                 {
-                    if (_enemyViews[i] == enemyView && !_enemyModels[i].IsFlying)
+                    if (_enemyViews[i] == enemyView && !_enemyModels[i].IsFlying && !_enemyModels[i].IsDead)
                         _targetID = i;
                 }
             }
@@ -93,6 +94,8 @@ namespace TankGame
 
         private void RemoveTempMarker()
         {
+            if (!_isOnSearchTarget) return;
+
             ResetTargetsStatus();
             _targetMarker.SetActive(false);
         }

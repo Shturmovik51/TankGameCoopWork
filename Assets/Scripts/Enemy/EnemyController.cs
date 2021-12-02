@@ -169,7 +169,7 @@ namespace TankGame
 
             _isRevenge = false;
             SetEnemiesFlyingState();
-            OnEndTurn?.Invoke();
+            _enemyViews[_curentEnemy].StartCoroutine(EndTurnDelay());
         }
 
         private void TakeDamage(int value, IDamagable view, AbilityType ownerAbility)
@@ -200,12 +200,6 @@ namespace TankGame
 
         }
 
-        private IEnumerator ShootDelay()
-        {
-            yield return new WaitForSeconds(0.5f);
-            EnemyShoot(_curentEnemy);
-        }
-
         private void EnemyShoot(int enemyID)
         { 
             var shell = _poolController.GetShell();
@@ -222,6 +216,18 @@ namespace TankGame
         {
             yield return new WaitForSeconds(2);
             RevengeTurn();
+        }
+
+        private IEnumerator ShootDelay()
+        {
+            yield return new WaitForSeconds(0.5f);
+            EnemyShoot(_curentEnemy);
+        }
+
+        private IEnumerator EndTurnDelay()
+        {
+            yield return new WaitForSeconds(1);
+            OnEndTurn?.Invoke();
         }
     }
 }

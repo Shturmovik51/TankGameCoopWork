@@ -15,6 +15,7 @@ namespace TankGame
         [SerializeField] private Rigidbody _tankRigidbody;
         [SerializeField] private ParticleSystem _explosionBody;
         [SerializeField] private ParticleSystem _explosionTover;
+        [SerializeField] private Transform _marker;
         private int _rotationSpeed = 2;
         // private Image _healthBar;
 
@@ -26,6 +27,7 @@ namespace TankGame
         private float _rotationTime = 1;
         private EntiTyStatsPanel _playerStatsPanel;
 
+        public Transform Marker => _marker;
         public bool IsOnRotation => _isOnRotation;
 
         public void InitStatsPanel(EntiTyStatsPanel playerStatsPanel)
