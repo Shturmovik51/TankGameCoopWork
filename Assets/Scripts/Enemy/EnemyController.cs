@@ -138,7 +138,7 @@ namespace TankGame
 
             for (int i = 0; i < _readyEnemiesCount - 1; i++)
             {
-                var index = UnityEngine.Random.Range(0, _enemyModels.Length - 1);
+                var index = UnityEngine.Random.Range(0, _enemyModels.Length);
                 var enemy = _enemyViews[index];
 
                 if (!_enemyModels[index].IsDead && !_enemyModels[index].IsFlying)
