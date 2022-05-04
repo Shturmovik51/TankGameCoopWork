@@ -6,13 +6,15 @@ namespace TankGame
     public sealed class GameData : ScriptableObject
     {
         [SerializeField] private InputKeysData _inputKeysData;
-        [SerializeField] private PlayerModelData _playerModelData;
-        [SerializeField] private EnemyModelData _enemyModelData;
-        [SerializeField] private PoolData _effectsData;
+        [SerializeField] private PlayerBase _playerBase;
+        [SerializeField] private EnemyBase _enemyBase;
+        [SerializeField] private PrefabsData _prefabsData;
+        [SerializeField] private AbilityBase _abilityBase;
 
         public InputKeysData InputKeysData => _inputKeysData;
-        public PlayerModelData PlayerModelData => _playerModelData;
-        public EnemyModelData EnemyModelData => _enemyModelData;
-        public PoolData EffectsData => _effectsData;        
+        public PlayerBase PlayerBase => _playerBase;
+        public EnemyBase EnemyBase => _enemyBase;
+        public PrefabsData PrefabsData => _prefabsData;
+        public AbilityBase AbilityBase => _abilityBase;
     }
 }

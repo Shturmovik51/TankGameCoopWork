@@ -3,6 +3,11 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+<<<<<<< HEAD
+/[Ll]ogs/
+=======
+[Ll]ogs/
+>>>>>>> Stable
 Assets/AssetStoreTools*
 
 # Visual Studio cache directory
