@@ -6,10 +6,14 @@ namespace TankGame
     {
         [SerializeField] private int _lifesCount;
         [SerializeField] private float _difficultIndex;
-        private SavedData _savedData; 
+        private SavedData _savedData;
+        private int _levelsCount;
+        private float _playerLevelPoints;
 
         public int LifesCount => _lifesCount;
         public float DifficultIndex => _difficultIndex;
+        public int LevelsCount => _levelsCount;
+        public float PlayerLevelPoints => _playerLevelPoints;
         public SavedData SavedData => _savedData;
 
         private void Awake()
@@ -32,6 +36,8 @@ namespace TankGame
         public void SetStartGameParameters()
         {
             _difficultIndex = 0;
+            _levelsCount= 0;
+            _playerLevelPoints = 0;
             _lifesCount = 3;
         }
 
@@ -48,5 +54,21 @@ namespace TankGame
         {
             _savedData = null;
         }
+
+        public void IncreaseLevelCount()
+        {
+            _levelsCount++;
+        }
+
+        public void CalculateLevelPoints()
+        {
+            _playerLevelPoints = 10 + (_levelsCount * _difficultIndex);
+        } 
     }
+}
+
+public class PlayFabConstants
+{
+    public const string LEVEL_POINTS = "LP";
+    public const string LEVELS_COUNT = "Max Levels Count";
 }

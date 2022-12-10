@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using PlayFab.ClientModels;
+using PlayFab;
+using UnityEditor.PackageManager;
 
 namespace TankGame
 {
@@ -65,12 +68,36 @@ namespace TankGame
 
         public void StartWinScreen()
         {
+            _roundController.IncreaseLevelCount();
+            _roundController.CalculateLevelPoints();
             _endScreenPanel.SetActive(true);
             Time.timeScale = 0;
 
             _winText.gameObject.SetActive(true);
             _continueButton.gameObject.SetActive(true);
             _soundManager.PlayEndScreenSound();
+
+            PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest
+            {
+                Statistics = new List<StatisticUpdate>
+            {
+                new StatisticUpdate { StatisticName = PlayFabConstants.LEVELS_COUNT, Value = _roundController.LevelsCount}
+            }
+            }, OnStatisticsUpdated, OnError);
+        }
+
+        private void OnStatisticsUpdated(UpdatePlayerStatisticsResult result)
+        {
+            PlayFabClientAPI.AddUserVirtualCurrency(new AddUserVirtualCurrencyRequest()
+            {
+                Amount = (int)_roundController.PlayerLevelPoints,
+                VirtualCurrency = PlayFabConstants.LEVEL_POINTS
+            }, result => Debug.Log(result.Balance), OnError);
+        }
+
+        private void OnError(PlayFabError error)
+        {
+            Debug.Log(error.ErrorDetails);
         }
 
         private void OnClickRestartButton()
