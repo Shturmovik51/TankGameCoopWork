@@ -24,7 +24,7 @@ public class GameMenuView : MonoBehaviour
 
         _optionsPanelView.Init();
         
-        _soundManager.PlayGameMainTheme();
+        //_soundManager.PlayGameMainTheme();
         _soundManager.AddButton(_continueButton);
         _soundManager.AddButton(_optionsButton);
         _soundManager.AddButton(_exitButton);
@@ -37,6 +37,11 @@ public class GameMenuView : MonoBehaviour
         gameObject.SetActive(false);
         _optionsPanelView.gameObject.SetActive(false);
         Time.timeScale = 1;
+    }
+
+    public void ResetSoundValue()
+    {
+        _optionsPanelView.ResetSoundOptions();
     }
 
     public void ClearSubscribes()

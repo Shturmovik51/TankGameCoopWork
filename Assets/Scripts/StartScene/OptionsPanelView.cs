@@ -20,7 +20,7 @@ public class OptionsPanelView : MonoBehaviour
         _confirmButton.onClick.AddListener(SetSoundOptions);
         _backButton.onClick.AddListener(ResetSoundOptions);
 
-        ResetSoundOptions();
+        //ResetSoundOptions();
         _musicSlider.onValueChanged.Invoke(_musicSlider.value);
         _effectsSlider.onValueChanged.Invoke(_effectsSlider.value);
     }
@@ -41,7 +41,7 @@ public class OptionsPanelView : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void ResetSoundOptions()
+    public void ResetSoundOptions()
     {
         if (PlayerPrefs.HasKey($"MusicSoundOptions"))
         {

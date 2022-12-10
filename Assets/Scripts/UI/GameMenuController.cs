@@ -11,7 +11,7 @@ namespace TankGame
         public GameMenuController(GameMenuView view)
         {
             _view = view;
-            _view.Init();
+            //_view.Init();
         }
 
         public void LocalUpdate(float deltaTime)

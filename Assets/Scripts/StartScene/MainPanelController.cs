@@ -43,6 +43,7 @@ public class MainPanelController : MonoBehaviour
         _showLBButton.onClick.AddListener(ShowLeaderBoard);
 
         _optionsPanelView.Init();
+        _optionsPanelView.ResetSoundOptions();
         _soundManager.SubscribeMenuButtons();
         _soundManager.PlayMenuSound();
 

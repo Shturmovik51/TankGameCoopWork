@@ -16,10 +16,11 @@ namespace TankGame
             var startGameParametersManager = Object.FindObjectOfType<StartGameParametersManager>();
             var unitsUIPositionController = new UnitsUIPositionController();
 
+            var soundManager = Object.FindObjectOfType<SoundManager>();
+
             var gameMenuObject = Object.Instantiate(gameData.PrefabsData.GameMenu, canvas.transform);
             var gameMenuView = gameMenuObject.GetComponent<GameMenuView>();
-            gameMenuView.gameObject.SetActive(false);
-            
+            gameMenuView.gameObject.SetActive(false);            
 
             var gameMenuController = new GameMenuController(gameMenuView);
 
@@ -96,11 +97,12 @@ namespace TankGame
             var targetMarkerSizeController = new TargetMarkerSizeController(targetController, abilitiesManager);
             var skillButtonActiveStateController = new SkillButtonsActiveStateController(skillButtonsManager, targetMarkerSizeController);
             var skillButtonCDStateController = new SkillButtonsCDStateController(skillButtonsManager, turnController, playerController);
-
-            var soundManager = Object.FindObjectOfType<SoundManager>();
+                        
+            soundManager.PlayGameMainTheme();
             soundManager.SubscribeGameButtons();
             soundManager.AddTanksAudioSources();
-
+            gameMenuView.Init();
+            gameMenuView.ResetSoundValue();
 
             endscreen.transform.SetSiblingIndex(10); //todo подумать, как сделать нормально
 

@@ -61,7 +61,6 @@ public class SoundManager : MonoBehaviour
     public void PlayEndScreenSound()
     {
         ResetMusicBG();
-        _endScreenSound.loop = true;
         _endScreenSound.Play();
     }
 
