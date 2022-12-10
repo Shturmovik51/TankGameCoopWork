@@ -17,6 +17,7 @@ public class MainPanelController : MonoBehaviour
     [SerializeField] private Button _exitButton;
     [SerializeField] private Button _startButton;
     [SerializeField] private Button _showLBButton;
+    [SerializeField] private Button _closeLBButton;
     [SerializeField] private OptionsPanelView _optionsPanelView;
     [SerializeField] private CreateAccountWindow _createAccountWindow;
     [SerializeField] private SignInWindow _signInWindow;
@@ -41,6 +42,7 @@ public class MainPanelController : MonoBehaviour
         _createAccButton.onClick.AddListener(ShowCreateAccountWindow);
         _startButton.onClick.AddListener(StartGame);
         _showLBButton.onClick.AddListener(ShowLeaderBoard);
+        _closeLBButton.onClick.AddListener(() => _lbPanel.gameObject.SetActive(false));
 
         _optionsPanelView.Init();
         _optionsPanelView.ResetSoundOptions();
@@ -49,6 +51,11 @@ public class MainPanelController : MonoBehaviour
 
         _createAccountWindow.OnLogin += OnLoginSuccess;
         _signInWindow.OnLogin += OnLoginSuccess;
+
+        _optionsPanelView.gameObject.SetActive(false);
+        _lbPanel.gameObject.SetActive(false);
+        _createAccountWindow.gameObject.SetActive(false);
+        _signInWindow.gameObject.SetActive(false);
     }
 
     private void ShowLeaderBoard()
@@ -116,6 +123,9 @@ public class MainPanelController : MonoBehaviour
         _createAccButton.onClick.RemoveAllListeners();
         _optionsButton.onClick.RemoveAllListeners();
         _exitButton.onClick.RemoveAllListeners();
+        _showLBButton.onClick.RemoveAllListeners();
+        _closeLBButton.onClick.RemoveAllListeners();
+        _startButton.onClick.RemoveAllListeners();
 
         _optionsPanelView.MusicSlider.onValueChanged.RemoveAllListeners();
         _optionsPanelView.EffectsSlider.onValueChanged.RemoveAllListeners();
