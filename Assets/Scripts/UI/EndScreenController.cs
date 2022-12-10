@@ -19,13 +19,21 @@ namespace TankGame
         [SerializeField] private TextMeshProUGUI _winText;
         [SerializeField] private TextMeshProUGUI _loseText;
         [SerializeField] private TextMeshProUGUI _lifesCountText;
+        private SoundManager _soundManager;
+
         private StartGameParametersManager _roundController;
 
         public void Initialization()
         {
+            _soundManager = FindObjectOfType<SoundManager>();
+
             _restartButton.onClick.AddListener(OnClickRestartButton);
             _tryAgainButton.onClick.AddListener(OnClickTryAgain);
             _continueButton.onClick.AddListener(OnClickContinueButton);
+
+            _soundManager.AddButton(_restartButton);
+            _soundManager.AddButton(_tryAgainButton);
+            _soundManager.AddButton(_continueButton);
         }
 
         public void CleanUp()
@@ -52,7 +60,7 @@ namespace TankGame
 
             _loseText.gameObject.SetActive(true);
             _tryAgainButton.gameObject.SetActive(true);
-
+            _soundManager.PlayEndScreenSound();
         }
 
         public void StartWinScreen()
@@ -62,25 +70,26 @@ namespace TankGame
 
             _winText.gameObject.SetActive(true);
             _continueButton.gameObject.SetActive(true);
+            _soundManager.PlayEndScreenSound();
         }
 
         private void OnClickRestartButton()
         {
             _roundController.SetStartGameParameters();
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
             Time.timeScale = 1;
         }
         private void OnClickTryAgain()
         {
             _roundController.DecreaseLifeCount();
             OnTakeLife?.Invoke();
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
             Time.timeScale = 1;
         }
         private void OnClickContinueButton()
         {
             _roundController.IncreaseDifficultIndex();
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
             Time.timeScale = 1;
         }
 

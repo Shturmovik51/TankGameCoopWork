@@ -21,11 +21,14 @@ namespace TankGame
         [SerializeField] private BoxCollider _tankCollider;
         [SerializeField] private ParticleSystem _shootEffect;
         [SerializeField] private ParticleSystem _flyEffect;
+        [SerializeField] private AudioSource _shootSound;
+        [SerializeField] private AudioSource _hitSound;
 
         private Quaternion _startDirection;
         private Quaternion _targetDirection;
 
         private bool _isOnRotation;
+        private bool _isStartSync;
         private float _lerpProgress;
         private float _rotationTime = 1;
         private EntiTyStatsPanel _tankStatsPanel;
@@ -44,12 +47,14 @@ namespace TankGame
             shellRigidBody.velocity = Vector3.zero;
             shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
             _shootEffect.Play();
+            _shootSound.Play();
         }
 
         public void InitStatsPanel(EntiTyStatsPanel tankStatsPanel, UnitsUIPositionController unitsUIPositionController)
         {
             _tankStatsPanel = tankStatsPanel;
             unitsUIPositionController.AddUIElement(transform, _tankStatsPanel.StatsPanel);
+            _isStartSync = true;
         }
 
         public void SetStartRotationParameters(Transform target)
@@ -78,6 +83,13 @@ namespace TankGame
         public void UpdateHPBar(float barValue)
         {
             _tankStatsPanel.UpdateHP(barValue);
+
+            if (!_isStartSync)
+            {
+                _hitSound.Play();
+            }
+
+            _isStartSync = false;
         }
 
         public void Explosion()

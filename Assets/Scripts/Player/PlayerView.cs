@@ -17,6 +17,9 @@ namespace TankGame
         [SerializeField] private ParticleSystem _explosionTover;
         [SerializeField] private Transform _marker;
         [SerializeField] private ParticleSystem _shootEffect;
+        [SerializeField] private AudioSource _shootSound;
+        [SerializeField] private AudioSource _hitSound;
+
         private int _rotationSpeed = 2;
         // private Image _healthBar;
 
@@ -24,6 +27,7 @@ namespace TankGame
         private Quaternion _targetDirection;
 
         private bool _isOnRotation;
+        private bool _isStartSync;
         private float _lerpProgress;
         private float _rotationTime = 1;
         private EntiTyStatsPanel _playerStatsPanel;
@@ -34,6 +38,7 @@ namespace TankGame
         public void InitStatsPanel(EntiTyStatsPanel playerStatsPanel)
         {
             _playerStatsPanel = playerStatsPanel;
+            _isStartSync = true;
         }
 
         public void Shoot(GameObject shell, int shootForce)
@@ -45,6 +50,7 @@ namespace TankGame
             shellRigidBody.velocity = Vector3.zero;
             shellRigidBody.AddForce(_shellStartPosition.forward * shootForce, ForceMode.Impulse);
             _shootEffect.Play();
+            _shootSound.Play();
         }
 
         public void SetStartRotationParameters(Transform target)
@@ -94,6 +100,13 @@ namespace TankGame
         public void UpdateHealthBar(float barValue)
         {
             _playerStatsPanel.UpdateHP(barValue);
+
+            if (!_isStartSync)
+            {
+                _hitSound.Play();
+            }
+
+            _isStartSync = false;
         }
 
         public void UpdateElement(Sprite elementImage)

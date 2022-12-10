@@ -16,7 +16,12 @@ namespace TankGame
             var startGameParametersManager = Object.FindObjectOfType<StartGameParametersManager>();
             var unitsUIPositionController = new UnitsUIPositionController();
 
+            var gameMenuObject = Object.Instantiate(gameData.PrefabsData.GameMenu, canvas.transform);
+            var gameMenuView = gameMenuObject.GetComponent<GameMenuView>();
+            gameMenuView.gameObject.SetActive(false);
+            
 
+            var gameMenuController = new GameMenuController(gameMenuView);
 
             var endscreen = Object.Instantiate(gameData.PrefabsData.EndScreen, canvas.transform);
             endscreen.SetActive(false);
@@ -92,8 +97,12 @@ namespace TankGame
             var skillButtonActiveStateController = new SkillButtonsActiveStateController(skillButtonsManager, targetMarkerSizeController);
             var skillButtonCDStateController = new SkillButtonsCDStateController(skillButtonsManager, turnController, playerController);
 
+            var soundManager = Object.FindObjectOfType<SoundManager>();
+            soundManager.SubscribeGameButtons();
+            soundManager.AddTanksAudioSources();
 
-            endscreen.transform.SetSiblingIndex(10); //todo подумать, как сделать нормальнов
+
+            endscreen.transform.SetSiblingIndex(10); //todo подумать, как сделать нормально
 
             var saveDataRepository = new SaveDataRepository(inputController,/* playersModels*/ enemyModels, skillButtonsManager, 
                                             startGameParametersManager);
@@ -112,6 +121,7 @@ namespace TankGame
             controllersManager.Add(saveDataRepository);
             controllersManager.Add(enemiesStatesController);
             controllersManager.Add(unitsUIPositionController);
+            controllersManager.Add(gameMenuController);
         }
     }
 }
